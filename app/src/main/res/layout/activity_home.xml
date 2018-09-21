@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/container_fragment"
         android:layout_width="wrap_content"
-        android:layout_height="455dp"
+        android:layout_height="wrap_content"
         android:text="@string/title_home"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
