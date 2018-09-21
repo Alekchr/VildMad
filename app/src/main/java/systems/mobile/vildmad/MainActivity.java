@@ -1,5 +1,6 @@
 package systems.mobile.vildmad;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FindFragment
+        .OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener{
 
     private TextView mTextMessage;
     Fragment fragment = null;
@@ -23,17 +25,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    fragment = HomeFragment.newInstance("hi", "hi");
+                    replaceFragment(fragment);
                     return true;
                 case R.id.navigation_map:
-                    fragment = new MapFragment();
+                    fragment = MapFragment.newInstance("hi", "hi");
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_landscape:
                     mTextMessage.setText(R.string.title_landscape);
                     return true;
-                case R.id.navigation_pic:
-                    mTextMessage.setText(R.string.title_pic);
+                case R.id.navigation_find:
+                    fragment = FindFragment.newInstance("hi", "hi");
+                    replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:
                     mTextMessage.setText(R.string.title_more);
@@ -47,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        mTextMessage = (TextView) findViewById(R.id.message);
+        fragment = new HomeFragment();
+        replaceFragment(fragment);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -57,8 +61,13 @@ public class MainActivity extends AppCompatActivity {
     public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment);
+        transaction.replace(R.id.container_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
