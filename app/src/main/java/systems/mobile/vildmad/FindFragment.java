@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.hardware.camera2.*;
 
 /**
  * A simple {@link Fragment} subclass.
