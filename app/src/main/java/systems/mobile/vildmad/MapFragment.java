@@ -2,6 +2,7 @@ package systems.mobile.vildmad;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +16,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +34,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -51,10 +55,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-
+    private Button mButton;
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
+    Button button;
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     Location mLastLocation;
@@ -106,6 +111,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView = (MapView) mView.findViewById(R.id.map);
+        mButton = (Button) mView.findViewById(R.id.addMarkerButton);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -124,12 +130,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        final FragmentManager fm = getActivity().getSupportFragmentManager();
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(120000);
-        mLocationRequest.setFastestInterval(120000);
+        mLocationRequest.setInterval(1200);
+        mLocationRequest.setFastestInterval(1200);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -148,10 +157,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mGoogleMap.setMyLocationEnabled(true);
         }
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogAddMarker df = new DialogAddMarker();
+                df.setTargetFragment(getActivity().getSupportFragmentManager().getPrimaryNavigationFragment(),11);
+                df.show(fm, "hej");
+            }
+        });
+
+
+
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
+
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude)).title("New Marker");
 
@@ -185,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 //move map camera
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+
             }
         }
     };
