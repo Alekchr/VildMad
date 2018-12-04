@@ -2,6 +2,7 @@ package systems.mobile.vildmad;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -158,14 +159,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mGoogleMap.setMyLocationEnabled(true);
         }
 
+        //For adding a new marker on the current position
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogAddMarker df = new DialogAddMarker();
-                df.setTargetFragment(getActivity().getSupportFragmentManager().getPrimaryNavigationFragment(),11);
-                df.show(fm, "hej");
+                addMarkerOnClick();
             }
         });
+
+
 
 
 
@@ -180,6 +182,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mGoogleMap.addMarker(marker);
             }
         });
+
+
 
     }
 
@@ -211,6 +215,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     };
+
+    public void addMarkerOnCurrentPosition(){
+
+        MarkerOptions marker = new MarkerOptions().position(
+                new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("New Marker");
+
+        mGoogleMap.addMarker(marker);
+
+    }
+
+    public void addMarkerOnClick(){
+        new AlertDialog.Builder(getContext()).setTitle("Confirm")
+                .setMessage("Do you want to add Marker?")
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton)
+                            {
+                                // add marker with LatLng geo
+                                addMarkerOnCurrentPosition();
+                            }
+                        }
+                )
+                .setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton)
+                            {
+                                //do nothing
+                                dialog.dismiss();
+                            }
+                        }
+                ).show();
+
+    }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private void checkLocationPermission() {
