@@ -4,7 +4,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.content.Context;
@@ -65,6 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+    BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     private long lastTouchTime = -1;
 
@@ -94,6 +98,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return fragment;
     }
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra("level", 0);
+            int scale = intent.getIntExtra("scale", 100);
+            int batpercentage = level * 100 / scale;
+            if (batpercentage >= 50) {
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            } else if (batpercentage < 50 && batpercentage > 15) {
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            } else if (batpercentage <= 15) {
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+            }
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +159,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1200);
         mLocationRequest.setFastestInterval(1200);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        getActivity().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(),
@@ -183,10 +203,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
-
     }
-
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
