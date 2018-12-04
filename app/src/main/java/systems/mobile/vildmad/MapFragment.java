@@ -106,10 +106,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int batpercentage = level * 100 / scale;
             if (batpercentage >= 50) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                mLocationRequest.setInterval(5000);
             } else if (batpercentage < 50 && batpercentage > 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                mLocationRequest.setInterval(100000);
+                mLocationRequest.setFastestInterval(10000);
             } else if (batpercentage <= 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+                mLocationRequest.setInterval(3600000);
+                mLocationRequest.setFastestInterval(60000);
             }
         }
     };
@@ -157,8 +162,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1200);
-        mLocationRequest.setFastestInterval(1200);
 
         getActivity().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
