@@ -142,6 +142,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
         mMapView = (MapView) mView.findViewById(R.id.map);
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
+        mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
+
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
