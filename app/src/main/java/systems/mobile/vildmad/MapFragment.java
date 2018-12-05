@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
@@ -59,6 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+    CheckBox mCheckBox;
     private Button mButton;
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -70,6 +73,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Marker mCurrLocationMarker;
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
+    EditText mEditTextNote;
     private long lastTouchTime = -1;
 
 
@@ -202,17 +206,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
-            @Override
-            public void onMapClick(LatLng point) {
-
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("New Marker");
-
-                mGoogleMap.addMarker(marker);
-            }
-        });
 
     }
 
@@ -244,18 +238,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(){
+    public void addMarkerOnCurrentPosition(boolean bln,String description,String title){
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
+        CustomMarker cm = new CustomMarker(marker,bln,description,"","");
 
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("New Marker");
 
-        mGoogleMap.addMarker(marker);
+
+
+        mGoogleMap.addMarker(cm.getMarker());
 
     }
 
     public void addMarkerOnClick(){
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
+        mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
+        mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
         new AlertDialog.Builder(getContext()).setTitle("Confirm")
                 .setMessage("Do you want to add Marker?")
                 .setCancelable(false)
@@ -264,8 +264,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton)
                             {
+                                boolean bool;
                                 // add marker with LatLng geo
-                                addMarkerOnCurrentPosition();
+                                if(mCheckBox.isChecked())
+                                    bool = true;
+                                else
+                                    bool = false;
+                                addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), "");
                             }
                         }
                 )
