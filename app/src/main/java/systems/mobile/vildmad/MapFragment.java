@@ -61,8 +61,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+    private Button mAddMarkerButton;
+    private Button mSettingsButton;
     CheckBox mCheckBox;
-    private Button mButton;
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
@@ -140,7 +141,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView = (MapView) mView.findViewById(R.id.map);
-        mButton = (Button) mView.findViewById(R.id.addMarkerButton);
+        mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -187,10 +188,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         //For adding a new marker on the current position
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mAddMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addMarkerOnClick();
+            }
+        });
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingsOnClick();
             }
         });
 
@@ -206,7 +213,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
+            @Override
+            public void onMapClick(LatLng point) {
+
+                MarkerOptions marker = new MarkerOptions().position(
+                        new LatLng(point.latitude, point.longitude)).title("New Marker");
+
+                mGoogleMap.addMarker(marker);
+            }
+        });
 
     }
 
@@ -283,6 +300,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         }
                 ).show();
+
+    }
+    public void settingsOnClick() {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
+        new AlertDialog.Builder(getContext()).setTitle("Confirm")
+                .setMessage("Do you want to add Marker?")
+                .setCancelable(false)
+                .setView(settingsLayout)
+                .setNegativeButton("Close",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton)
+                            {
+                                //do nothing
+                                dialog.dismiss();
+                            }
+                        }
+                ).show();
+
 
     }
 
