@@ -212,6 +212,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+
+
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
+                new AlertDialog.Builder(getContext()).setTitle("Marker")
+                        .setCancelable(false)
+                        .setView(markerSelectedLayout)
+                        .setNegativeButton("No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                    {
+                                        //do nothing
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show();
+
+                return false;
+            }
+
+        });
+
     }
 
     LocationCallback mLocationCallback = new LocationCallback() {
