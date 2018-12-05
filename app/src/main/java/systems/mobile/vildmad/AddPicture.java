@@ -92,8 +92,8 @@ public class AddPicture extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
-        view = inflater.inflate(R.layout.fragment_find, container, false);
-
+        view = inflater.inflate(R.layout.fragment_add_picture, container, false);
+        takePicture();
         // Set the image view
         mImageView = (ImageView)view.findViewById(R.id.cameraImageView);
         Button cameraButton = (Button)view.findViewById(R.id.cameraButton);
