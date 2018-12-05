@@ -28,9 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -63,6 +66,8 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Button mAddMarkerButton;
     private Button mSettingsButton;
+    private Spinner mTypeSpinner;
+    private Spinner mKindSpinner;
     CheckBox mCheckBox;
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -279,6 +284,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
         mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
         mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
+        mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
+        mKindSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_kind);
+        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String spinnerValue = mTypeSpinner.getSelectedItem().toString();
+                switch (spinnerValue){
+                    case "Svampe":
+                        ArrayAdapter<CharSequence> svampeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.svampe, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(svampeadapter);
+                        break;
+                    case "Frugter":
+                        ArrayAdapter<CharSequence> frugtadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.frugter, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(frugtadapter);
+                        break;
+                    case "Krydderurter":
+                        ArrayAdapter<CharSequence> krydderadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.krydderurter, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(krydderadapter);
+                        break;
+                    case "Bær":
+                        ArrayAdapter<CharSequence> baeradapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.baer, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(baeradapter);
+                        break;
+                    case "Nødder":
+                        ArrayAdapter<CharSequence> noeddeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.nodder, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(noeddeadapter);
+                        break;
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         new AlertDialog.Builder(getContext()).setTitle("Confirm")
                 .setMessage("Do you want to add Marker?")
                 .setCancelable(false)
