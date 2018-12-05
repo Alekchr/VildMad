@@ -13,13 +13,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.hardware.camera2.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,12 +30,12 @@ import java.util.Date;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FindFragment.OnFragmentInteractionListener} interface
+ * {@link AddPicture.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FindFragment#newInstance} factory method to
+ * Use the {@link AddPicture#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FindFragment extends Fragment{
+public class AddPicture extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -52,7 +50,7 @@ public class FindFragment extends Fragment{
     private ImageView mImageView;
     private OnFragmentInteractionListener mListener;
 
-    public FindFragment() {
+    public AddPicture() {
         // Required empty public constructor
     }
 
@@ -62,11 +60,11 @@ public class FindFragment extends Fragment{
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FindFragment.
+     * @return A new instance of fragment AddPicture.
      */
     // TODO: Rename and change types and number of parameters
-    public static FindFragment newInstance(String param1, String param2) {
-        FindFragment fragment = new FindFragment();
+    public static AddPicture newInstance(String param1, String param2) {
+        AddPicture fragment = new AddPicture();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

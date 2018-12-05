@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FindFragment.
+     * @return A new instance of fragment MapFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static MapFragment newInstance(String param1, String param2) {
