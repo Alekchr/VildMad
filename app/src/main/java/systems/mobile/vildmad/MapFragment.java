@@ -212,21 +212,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
-
-
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-            @Override
-            public void onMapClick(LatLng point) {
-
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("New Marker");
-
-                mGoogleMap.addMarker(marker);
-            }
-        });
-
     }
 
     LocationCallback mLocationCallback = new LocationCallback() {
@@ -244,11 +229,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 //Place current location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Current Position");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 //move map camera
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
@@ -261,9 +241,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         MarkerOptions marker = new MarkerOptions();
         marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
         CustomMarker cm = new CustomMarker(marker,bln,description,"","");
-
-
-
 
         mGoogleMap.addMarker(cm.getMarker());
 
