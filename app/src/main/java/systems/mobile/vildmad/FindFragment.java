@@ -1,5 +1,6 @@
 package systems.mobile.vildmad;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,7 +42,7 @@ public class FindFragment extends Fragment{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 11111;
 
 
     private String mParam1;
@@ -90,12 +93,12 @@ public class FindFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fView;
-        fView = inflater.inflate(R.layout.fragment_find, container, false);
+        View view;
+        view = inflater.inflate(R.layout.fragment_find, container, false);
 
         // Set the image view
-        mImageView = (ImageView)fView.findViewById(R.id.cameraImageView);
-        Button cameraButton = (Button)fView.findViewById(R.id.cameraButton);
+        mImageView = (ImageView)view.findViewById(R.id.cameraImageView);
+        Button cameraButton = (Button)view.findViewById(R.id.cameraButton);
 
         // Set OnItemClickListener so we can be notified on button clicks
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +107,7 @@ public class FindFragment extends Fragment{
                 takePicture();
             }
         });
-        return fView;
+        return view;
     }
 
     protected void takePicture(){
@@ -116,6 +119,7 @@ public class FindFragment extends Fragment{
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+
             } catch (IOException ex) {
                 Toast toast = Toast.makeText(context, "There was a problem saving the photo...",
                         Toast.LENGTH_SHORT);
@@ -126,7 +130,6 @@ public class FindFragment extends Fragment{
                 Uri fileUri = FileProvider.getUriForFile(context,
                         "com.example.android.fileprovider",
                         photoFile);
-                mCurrentPhotoPath = fileUri.getPath();
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         fileUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -138,7 +141,6 @@ public class FindFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             addPhotoToGallery();
-
             // Show the full sized image.
             setFullImageFromFilePath(mCurrentPhotoPath, mImageView);
         } else {
@@ -149,11 +151,11 @@ public class FindFragment extends Fragment{
 
     protected File createImageFile() throws IOException {
         Context context = getActivity();
+        warnNoWritePermission(context);
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.d("this is PATH:  ", context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                .getCanonicalPath());
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -180,6 +182,7 @@ public class FindFragment extends Fragment{
      * Read more:http://developer.android.com/training/camera/photobasics.html
      */
     private void setFullImageFromFilePath(String imagePath, ImageView imageView) {
+        Log.d("CUrrent path", mCurrentPhotoPath);
         // Get the dimensions of the View
         int targetW = imageView.getWidth();
         int targetH = imageView.getHeight();
@@ -203,6 +206,19 @@ public class FindFragment extends Fragment{
         imageView.setImageBitmap(bitmap);
     }
 
+    private void warnNoWritePermission(Context context) {
+        int result = ActivityCompat.checkSelfPermission(context, Manifest.permission
+                .WRITE_EXTERNAL_STORAGE);
+        if (result != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest
+                    .permission.WRITE_EXTERNAL_STORAGE)){
+                Toast.makeText(getActivity().getApplicationContext(), "External Storage permission needed. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+            } else {
+                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission
+                        .WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
