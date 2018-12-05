@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "572027430348",
+    "firebase_url": "https://vildmad-8964d.firebaseio.com",
+    "project_id": "vildmad-8964d",
+    "storage_bucket": "vildmad-8964d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:572027430348:android:6f0915ea978a7912",
+        "android_client_info": {
+          "package_name": "systems.mobile.vildmad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "572027430348-m5h2rc3fe1ddcvjdglgna25lgn1lvc3l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "systems.mobile.vildmad",
+            "certificate_hash": "cc90f4665d4e3e82e9482d96e04df2479c38921c"
+          }
+        },
+        {
+          "client_id": "572027430348-o36upokmfmdl97gl663mq9b123hs9e1f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5Y0BLguhpemSp5cHb3nf08xXqJdhFGZs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "572027430348-o36upokmfmdl97gl663mq9b123hs9e1f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
