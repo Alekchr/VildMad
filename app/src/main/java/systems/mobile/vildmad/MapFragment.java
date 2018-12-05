@@ -254,9 +254,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void addMarkerOnClick(){
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
         new AlertDialog.Builder(getContext()).setTitle("Confirm")
                 .setMessage("Do you want to add Marker?")
                 .setCancelable(false)
+                .setView(addMarkerLayout)
                 .setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton)
