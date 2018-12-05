@@ -28,7 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -59,7 +64,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private Button mButton;
+    private Button mAddMarkerButton;
+    private Button mSettingsButton;
+    private Spinner mTypeSpinner;
+    private Spinner mKindSpinner;
+    CheckBox mCheckBox;
     GoogleMap mGoogleMap;
     MapView mMapView;
     View mView;
@@ -70,6 +79,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Marker mCurrLocationMarker;
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
+    EditText mEditTextNote;
     private long lastTouchTime = -1;
 
 
@@ -136,7 +146,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mMapView = (MapView) mView.findViewById(R.id.map);
-        mButton = (Button) mView.findViewById(R.id.addMarkerButton);
+        mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
+        mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
+
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -183,10 +195,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         //For adding a new marker on the current position
-        mButton.setOnClickListener(new View.OnClickListener() {
+        mAddMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addMarkerOnClick();
+            }
+        });
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingsOnClick();
             }
         });
 
@@ -202,16 +220,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             @Override
-            public void onMapClick(LatLng point) {
+            public boolean onMarkerClick(Marker marker) {
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
+                new AlertDialog.Builder(getContext()).setTitle("Marker")
+                        .setCancelable(false)
+                        .setView(markerSelectedLayout)
+                        .setNegativeButton("No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                    {
+                                        //do nothing
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show();
 
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("New Marker");
-
-                mGoogleMap.addMarker(marker);
+                return false;
             }
+
         });
 
     }
@@ -231,11 +261,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 //Place current location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Current Position");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
                 //move map camera
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
@@ -244,25 +269,71 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(){
+    public void addMarkerOnCurrentPosition(boolean bln,String description,String title){
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
+        CustomMarker cm = new CustomMarker(marker,bln,description,"","");
 
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title("New Marker");
-
-        mGoogleMap.addMarker(marker);
+        mGoogleMap.addMarker(cm.getMarker());
 
     }
 
     public void addMarkerOnClick(){
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
+        mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
+        mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
+        mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
+        mKindSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_kind);
+        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String spinnerValue = mTypeSpinner.getSelectedItem().toString();
+                switch (spinnerValue){
+                    case "Svampe":
+                        ArrayAdapter<CharSequence> svampeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.svampe, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(svampeadapter);
+                        break;
+                    case "Frugter":
+                        ArrayAdapter<CharSequence> frugtadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.frugter, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(frugtadapter);
+                        break;
+                    case "Krydderurter":
+                        ArrayAdapter<CharSequence> krydderadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.krydderurter, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(krydderadapter);
+                        break;
+                    case "Bær":
+                        ArrayAdapter<CharSequence> baeradapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.baer, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(baeradapter);
+                        break;
+                    case "Nødder":
+                        ArrayAdapter<CharSequence> noeddeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.nodder, android.R.layout.simple_spinner_dropdown_item);
+                        mKindSpinner.setAdapter(noeddeadapter);
+                        break;
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         new AlertDialog.Builder(getContext()).setTitle("Confirm")
                 .setMessage("Do you want to add Marker?")
                 .setCancelable(false)
+                .setView(addMarkerLayout)
                 .setPositiveButton("Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton)
                             {
+                                boolean bool;
                                 // add marker with LatLng geo
-                                addMarkerOnCurrentPosition();
+                                if(mCheckBox.isChecked())
+                                    bool = true;
+                                else
+                                    bool = false;
+                                addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), "");
                             }
                         }
                 )
@@ -275,6 +346,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         }
                 ).show();
+
+    }
+    public void settingsOnClick() {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
+        new AlertDialog.Builder(getContext()).setTitle("Confirm")
+                .setMessage("Do you want to add Marker?")
+                .setCancelable(false)
+                .setView(settingsLayout)
+                .setNegativeButton("Close",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton)
+                            {
+                                //do nothing
+                                dialog.dismiss();
+                            }
+                        }
+                ).show();
+
 
     }
 

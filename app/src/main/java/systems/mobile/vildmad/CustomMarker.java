@@ -2,17 +2,21 @@ package systems.mobile.vildmad;
 
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Marker {
+public class CustomMarker {
 
     private MarkerOptions marker;
     private boolean isPublic;
     private int id;
     private String pictureUrl;
+    private String description;
+    private String title;
 
-    public Marker (MarkerOptions marker, boolean isPublic, String pictureUrl){
+    public CustomMarker (MarkerOptions marker, boolean isPublic, String pictureUrl, String description, String titel){
         this.marker = marker;
         this.isPublic = isPublic;
         this.pictureUrl = pictureUrl;
+        this.description = description;
+        this.title = titel;
     }
 
 
