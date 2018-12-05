@@ -13,10 +13,16 @@
         android:id="@+id/map"
         />
     <Button
-        android:id="@+id/addMarkerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="hej" />
+    android:id="@+id/addMarkerButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal|center_vertical"
+    android:text="Add Marker" />
+    <Button
+    android:id="@+id/settingsButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="40dp"
+    android:text="Settings" />
 
 </FrameLayout>
