@@ -4,42 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="15dp">
+    android:padding="10dp">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
         android:background="#90b06d" >
     <Spinner
         android:id="@+id/spinner_type"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
         android:entries="@array/planttypes"
         android:theme="@style/spinnerTheme"/>
     </RelativeLayout>
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="40dp"
+        android:layout_marginBottom="20dp"
         android:background="#F3F3F3"
         >
     <Spinner
         android:id="@+id/spinner_kind"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
         android:theme="@style/spinnerTheme2"/>
     </RelativeLayout>
     <CheckBox
         android:id="@+id/mPublicCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:text="Del Offentligt"
         android:textColor="#90b06d"
         android:buttonTint="#90b06d"/>
-
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Tilføj billede" />
     <EditText
         android:id="@+id/mEditTextNote"
         android:layout_width="fill_parent"

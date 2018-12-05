@@ -319,8 +319,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-        new AlertDialog.Builder(getContext()).setTitle("Confirm")
-                .setMessage("Do you want to add Marker?")
+        new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
                 .setCancelable(false)
                 .setView(addMarkerLayout)
                 .setPositiveButton("Yes",
