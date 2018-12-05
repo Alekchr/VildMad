@@ -194,6 +194,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
+                return false;
+
             }
         });
 
