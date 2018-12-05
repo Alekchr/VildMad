@@ -167,6 +167,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+            }
+        });
 
 
 
