@@ -1,6 +1,7 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
+import android.provider.Settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,9 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.content.Context;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,7 +79,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     Location mLastLocation;
-    Marker mCurrLocationMarker;
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
@@ -108,7 +110,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return fragment;
     }
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int level = intent.getIntExtra("level", 0);
@@ -128,11 +131,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -142,6 +147,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mView = inflater.inflate(R.layout.fragment_map, container, false);
         return mView;
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -155,6 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMapView.getMapAsync(this);
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -188,8 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //Request Location Permission
                 checkLocationPermission();
             }
-        }
-        else {
+        } else {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mGoogleMap.setMyLocationEnabled(true);
         }
@@ -218,8 +224,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-
-
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             @Override
@@ -231,8 +235,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .setView(markerSelectedLayout)
                         .setNegativeButton("No",
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton)
-                                    {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
                                         //do nothing
                                         dialog.dismiss();
                                     }
@@ -255,11 +258,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Location location = locationList.get(locationList.size() - 1);
                 Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
-                if (mCurrLocationMarker != null) {
-                    mCurrLocationMarker.remove();
-                }
-
-                //Place current location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 //move map camera
@@ -268,10 +266,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     };
+    LocationListener locationListenerGps = new LocationListener() {
+        public void onLocationChanged(Location location) {
+        }
 
-    public void addMarkerOnCurrentPosition(boolean bln,String description,String title){
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String title) {
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
         MarkerOptions marker = new MarkerOptions();
-        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
+        marker.position(new LatLng(location.getLatitude(), location.getLongitude())).title(title);
         CustomMarker cm = new CustomMarker(marker,bln,description,"","");
 
         mGoogleMap.addMarker(cm.getMarker());
