@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -75,6 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
+    Spinner mSpinnerTitle;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
 
@@ -110,6 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int scale = intent.getIntExtra("scale", 100);
             int batpercentage = level * 100 / scale;
             if (batpercentage >= 50) {
+
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);
             } else if (batpercentage < 50 && batpercentage > 15) {
@@ -184,6 +187,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 checkLocationPermission();
             }
         }
+
         else {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mGoogleMap.setMyLocationEnabled(true);
@@ -247,10 +251,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln,String description,String title){
+    public void addMarkerOnCurrentPosition(boolean bln,String description,String kind){
         MarkerOptions marker = new MarkerOptions();
-        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
-        CustomMarker cm = new CustomMarker(marker.getPosition().latitude,marker.getPosition().longitude,bln,description,"","");
+        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+        CustomMarker cm = new CustomMarker(marker.getPosition().latitude,marker.getPosition().longitude,bln,"pictureUrl",description,kind);
         db.writeNewMarker(cm);
 
 
@@ -265,6 +269,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
         mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
         mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
+        mSpinnerTitle = (Spinner) addMarkerLayout.findViewById((R.id.spinner_kind));
         new AlertDialog.Builder(getContext()).setTitle("Confirm")
                 .setMessage("Do you want to add Marker?")
                 .setCancelable(false)
@@ -279,7 +284,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     bool = true;
                                 else
                                     bool = false;
-                                addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), "");
+                                addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), mSpinnerTitle.getSelectedItem().toString());
 
                             }
                         }

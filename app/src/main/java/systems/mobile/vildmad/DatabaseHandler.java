@@ -9,14 +9,18 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DatabaseHandler {
 
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = mDatabase.getReference("marker");
+    DatabaseReference myRef = mDatabase.getReference("Marker");
 
     public DatabaseHandler(){
 
     }
 
     public void writeNewMarker(CustomMarker cm){
-        CustomMarker customMarker = cm;
-        myRef.child("marker").child("hej").setValue(customMarker);
+
+        String id = myRef.push().getKey();
+
+        CustomMarker customMarker = new CustomMarker(id, cm.getLng(), cm.getLat(), cm.isPublic(), cm.getPictureUrl(), cm.getDescription(), cm.getTitle());
+
+        myRef.push().setValue(customMarker);
     }
 }
