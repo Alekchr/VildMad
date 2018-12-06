@@ -37,7 +37,7 @@
         android:textColor="#90b06d"
         android:buttonTint="#90b06d"/>
     <Button
-        android:id="@+id/settingsButton"
+        android:id="@+id/addPictureButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Tilføj billede" />
