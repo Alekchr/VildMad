@@ -352,7 +352,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAddPictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = AddPicture.newInstance("hi", "hi");
+                Fragment fragment = AddPicture.newInstance();
                 ((MainActivity) getActivity()).replaceFragment(fragment);
             }
         });

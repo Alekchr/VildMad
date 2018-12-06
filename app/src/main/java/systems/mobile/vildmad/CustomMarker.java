@@ -19,6 +19,10 @@ public class CustomMarker {
         this.title = titel;
     }
 
+    public CustomMarker() {
+
+    }
+
 
     public MarkerOptions getMarker() {
         return marker;
