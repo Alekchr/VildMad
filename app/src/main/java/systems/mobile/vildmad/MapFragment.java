@@ -65,6 +65,7 @@ import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Button mAddMarkerButton;
+    private Button mAddPictureButton;
     private Button mSettingsButton;
     private Spinner mTypeSpinner;
     private Spinner mKindSpinner;
@@ -85,6 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -286,6 +288,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
         mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
         mKindSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_kind);
+        mAddPictureButton = (Button) addMarkerLayout.findViewById(R.id.addPictureButton);
         mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -346,6 +349,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                 ).show();
 
+        mAddPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = AddPicture.newInstance("hi", "hi");
+                ((MainActivity) getActivity()).replaceFragment(fragment);
+            }
+        });
     }
     public void settingsOnClick() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
