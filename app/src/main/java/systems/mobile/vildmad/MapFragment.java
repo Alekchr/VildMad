@@ -288,14 +288,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
+            checkLocationPermission();
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             MarkerOptions marker = new MarkerOptions();
-            marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+            marker.position(new LatLng(location.getLatitude(), location.getLongitude())).title(kind);
             CustomMarker cm = new CustomMarker(marker.getPosition().latitude, marker.getPosition().longitude, bln, "pictureUrl", description, kind);
             db.writeNewMarker(cm);
 
