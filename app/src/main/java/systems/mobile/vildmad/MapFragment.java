@@ -80,11 +80,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     Location mLastLocation;
+    Marker mCurrLocationMarker;
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
+    Spinner mSpinnerTitle;
     private long lastTouchTime = -1;
-
+    private DatabaseHandler db;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -156,7 +158,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = (MapView) mView.findViewById(R.id.map);
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
-
+        db = new DatabaseHandler();
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -282,57 +284,61 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln, String description, String title) {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        checkLocationPermission();
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
+        {
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            checkLocationPermission();
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         MarkerOptions marker = new MarkerOptions();
-        marker.position(new LatLng(location.getLatitude(), location.getLongitude())).title(title);
-        CustomMarker cm = new CustomMarker(marker,bln,description,"","");
+        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+        CustomMarker cm = new CustomMarker(marker.getPosition().latitude, marker.getPosition().longitude, bln, "pictureUrl", description, kind);
+        db.writeNewMarker(cm);
 
-        mGoogleMap.addMarker(cm.getMarker());
 
+        mGoogleMap.addMarker(marker);
+
+        }
     }
 
-    public void addMarkerOnClick(){
+        public void addMarkerOnClick () {
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
-        mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
-        mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
-        mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
-        mKindSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_kind);
-        mAddPictureButton = (Button) addMarkerLayout.findViewById(R.id.addPictureButton);
-        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String spinnerValue = mTypeSpinner.getSelectedItem().toString();
-                switch (spinnerValue){
-                    case "Svampe":
-                        ArrayAdapter<CharSequence> svampeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.svampe, android.R.layout.simple_spinner_dropdown_item);
-                        mKindSpinner.setAdapter(svampeadapter);
-                        break;
-                    case "Frugter":
-                        ArrayAdapter<CharSequence> frugtadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.frugter, android.R.layout.simple_spinner_dropdown_item);
-                        mKindSpinner.setAdapter(frugtadapter);
-                        break;
-                    case "Krydderurter":
-                        ArrayAdapter<CharSequence> krydderadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.krydderurter, android.R.layout.simple_spinner_dropdown_item);
-                        mKindSpinner.setAdapter(krydderadapter);
-                        break;
-                    case "Bær":
-                        ArrayAdapter<CharSequence> baeradapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.baer, android.R.layout.simple_spinner_dropdown_item);
-                        mKindSpinner.setAdapter(baeradapter);
-                        break;
-                    case "Nødder":
-                        ArrayAdapter<CharSequence> noeddeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.nodder, android.R.layout.simple_spinner_dropdown_item);
-                        mKindSpinner.setAdapter(noeddeadapter);
-                        break;
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
+            mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
+            mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
+            mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
+            mKindSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_kind);
+            mAddPictureButton = (Button) addMarkerLayout.findViewById(R.id.addPictureButton);
+            mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String spinnerValue = mTypeSpinner.getSelectedItem().toString();
+                    switch (spinnerValue) {
+                        case "Svampe":
+                            ArrayAdapter<CharSequence> svampeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.svampe, android.R.layout.simple_spinner_dropdown_item);
+                            mKindSpinner.setAdapter(svampeadapter);
+                            break;
+                        case "Frugter":
+                            ArrayAdapter<CharSequence> frugtadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.frugter, android.R.layout.simple_spinner_dropdown_item);
+                            mKindSpinner.setAdapter(frugtadapter);
+                            break;
+                        case "Krydderurter":
+                            ArrayAdapter<CharSequence> krydderadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.krydderurter, android.R.layout.simple_spinner_dropdown_item);
+                            mKindSpinner.setAdapter(krydderadapter);
+                            break;
+                        case "Bær":
+                            ArrayAdapter<CharSequence> baeradapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.baer, android.R.layout.simple_spinner_dropdown_item);
+                            mKindSpinner.setAdapter(baeradapter);
+                            break;
+                        case "Nødder":
+                            ArrayAdapter<CharSequence> noeddeadapter = ArrayAdapter.createFromResource(getActivity().getApplicationContext(), R.array.nodder, android.R.layout.simple_spinner_dropdown_item);
+                            mKindSpinner.setAdapter(noeddeadapter);
+                            break;
 
                 }
             }
