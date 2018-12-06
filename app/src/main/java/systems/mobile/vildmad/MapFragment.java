@@ -360,7 +360,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         bool = true;
                                     else
                                         bool = false;
-                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), "");
+                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString());
                                 }
                             }
                     )
