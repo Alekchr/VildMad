@@ -10,14 +10,51 @@ public class CustomMarker {
     private String pictureUrl;
     private String description;
     private String title;
+    private double lng;
 
-    public CustomMarker (MarkerOptions marker, boolean isPublic, String pictureUrl, String description, String titel){
-        this.marker = marker;
+    public CustomMarker (double lng, double lat, boolean isPublic, String pictureUrl, String description, String titel){
+        this.lng = lng;
+        this.lat = lat;
         this.isPublic = isPublic;
         this.pictureUrl = pictureUrl;
         this.description = description;
         this.title = titel;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    private double lat;
+
 
 
     public MarkerOptions getMarker() {

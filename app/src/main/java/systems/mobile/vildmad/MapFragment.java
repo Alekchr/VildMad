@@ -76,7 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
     private long lastTouchTime = -1;
-
+    private DatabaseHandler db;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -143,7 +143,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = (MapView) mView.findViewById(R.id.map);
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
-
+        db = new DatabaseHandler();
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -215,17 +215,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
-            @Override
-            public void onMapClick(LatLng point) {
-
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("New Marker");
-
-                mGoogleMap.addMarker(marker);
-            }
-        });
 
     }
 
@@ -260,12 +250,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void addMarkerOnCurrentPosition(boolean bln,String description,String title){
         MarkerOptions marker = new MarkerOptions();
         marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(title);
-        CustomMarker cm = new CustomMarker(marker,bln,description,"","");
+        CustomMarker cm = new CustomMarker(marker.getPosition().latitude,marker.getPosition().longitude,bln,description,"","");
+        db.writeNewMarker(cm);
 
 
 
-
-        mGoogleMap.addMarker(cm.getMarker());
+        mGoogleMap.addMarker(marker);
 
     }
 
@@ -290,6 +280,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 else
                                     bool = false;
                                 addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), "");
+
                             }
                         }
                 )
