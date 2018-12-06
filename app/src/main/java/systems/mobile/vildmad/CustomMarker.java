@@ -105,4 +105,6 @@ public class CustomMarker {
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
     }
+
+
 }

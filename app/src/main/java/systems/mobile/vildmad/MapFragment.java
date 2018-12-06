@@ -1,7 +1,6 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
-import android.provider.Settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -90,7 +89,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
 
     public MapFragment() {
         // Required empty public constructor
@@ -290,17 +288,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-            checkLocationPermission();
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        MarkerOptions marker = new MarkerOptions();
-        marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
-        CustomMarker cm = new CustomMarker(marker.getPosition().latitude, marker.getPosition().longitude, bln, "pictureUrl", description, kind);
-        db.writeNewMarker(cm);
+            MarkerOptions marker = new MarkerOptions();
+            marker.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+            CustomMarker cm = new CustomMarker(marker.getPosition().latitude, marker.getPosition().longitude, bln, "pictureUrl", description, kind);
+            db.writeNewMarker(cm);
 
 
-        mGoogleMap.addMarker(marker);
+            mGoogleMap.addMarker(marker);
 
         }
     }
@@ -340,135 +340,134 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             mKindSpinner.setAdapter(noeddeadapter);
                             break;
 
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
-                .setCancelable(false)
-                .setView(addMarkerLayout)
-                .setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton)
-                            {
-                                boolean bool;
-                                // add marker with LatLng geo
-                                if(mCheckBox.isChecked())
-                                    bool = true;
-                                else
-                                    bool = false;
-                                addMarkerOnCurrentPosition(bool,mEditTextNote.getText().toString(), "");
-                            }
-                        }
-                )
-                .setNegativeButton("No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton)
-                            {
-                                //do nothing
-                                dialog.dismiss();
-                            }
-                        }
-                ).show();
-
-        mAddPictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = AddPicture.newInstance();
-                ((MainActivity) getActivity()).replaceFragment(fragment);
-            }
-        });
-    }
-    public void settingsOnClick() {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
-        new AlertDialog.Builder(getContext()).setTitle("Confirm")
-                .setMessage("Do you want to add Marker?")
-                .setCancelable(false)
-                .setView(settingsLayout)
-                .setNegativeButton("Close",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton)
-                            {
-                                //do nothing
-                                dialog.dismiss();
-                            }
-                        }
-                ).show();
-
-
-    }
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Location Permission Needed")
-                        .setMessage("This app needs the Location permission, please accept to use location functionality")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION );
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION );
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(getActivity(),
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                        mGoogleMap.setMyLocationEnabled(true);
                     }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+            new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
+                    .setCancelable(false)
+                    .setView(addMarkerLayout)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    boolean bool;
+                                    // add marker with LatLng geo
+                                    if (mCheckBox.isChecked())
+                                        bool = true;
+                                    else
+                                        bool = false;
+                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString());
+                                }
+                            }
+                    )
+                    .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //do nothing
+                                    dialog.dismiss();
+                                }
+                            }
+                    ).show();
+
+            mAddPictureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment fragment = AddPicture.newInstance();
+                    ((MainActivity) getActivity()).replaceFragment(fragment);
+                }
+            });
+        }
+
+        public void settingsOnClick () {
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
+            new AlertDialog.Builder(getContext()).setTitle("Confirm")
+                    .setMessage("Do you want to add Marker?")
+                    .setCancelable(false)
+                    .setView(settingsLayout)
+                    .setNegativeButton("Close",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    //do nothing
+                                    dialog.dismiss();
+                                }
+                            }
+                    ).show();
+
+
+        }
+
+        public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+        private void checkLocationPermission () {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Location Permission Needed")
+                            .setMessage("This app needs the Location permission, please accept to use location functionality")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //Prompt the user once explanation has been shown
+                                    ActivityCompat.requestPermissions(getActivity(),
+                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                            MY_PERMISSIONS_REQUEST_LOCATION);
+                                }
+                            })
+                            .create()
+                            .show();
+
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            MY_PERMISSIONS_REQUEST_LOCATION);
                 }
-                return;
             }
+        }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
+        @Override
+        public void onRequestPermissionsResult ( int requestCode,
+        String permissions[], int[] grantResults){
+            switch (requestCode) {
+                case MY_PERMISSIONS_REQUEST_LOCATION: {
+                    // If request is cancelled, the result arrays are empty.
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                        // permission was granted, yay! Do the
+                        // location-related task you need to do.
+                        if (ContextCompat.checkSelfPermission(getActivity(),
+                                Manifest.permission.ACCESS_FINE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+
+                            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                            mGoogleMap.setMyLocationEnabled(true);
+                        }
+
+                    } else {
+
+                        // permission denied, boo! Disable the
+                        // functionality that depends on this permission.
+                        Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+                    }
+                    return;
+                }
+
+                // other 'case' lines to check for other
+                // permissions this app might request
+            }
         }
     }
-}
