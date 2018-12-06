@@ -66,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements AddPicture
         transaction.commit();
     }
 
+    public void returnToFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
