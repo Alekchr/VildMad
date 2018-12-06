@@ -286,10 +286,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        checkLocationPermission();
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
         locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
