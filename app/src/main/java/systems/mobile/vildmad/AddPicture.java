@@ -58,16 +58,12 @@ public class AddPicture extends Fragment{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AddPicture.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddPicture newInstance(String param1, String param2) {
+    public static AddPicture newInstance() {
         AddPicture fragment = new AddPicture();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,25 +71,29 @@ public class AddPicture extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        takePicture();
     }
-
-    /**
-     * OnCreateView fragment override
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
-     */
-    @Override
+    /*
+        /**
+         * OnCreateView fragment override
+         * @param inflater
+         * @param container
+         * @param savedInstanceState
+         * @return
+         */
+    /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        takePicture();
+
         View view;
         view = inflater.inflate(R.layout.fragment_add_picture, container, false);
-        takePicture();
+
         // Set the image view
         mImageView = (ImageView)view.findViewById(R.id.cameraImageView);
         Button cameraButton = (Button)view.findViewById(R.id.cameraButton);
@@ -107,7 +107,7 @@ public class AddPicture extends Fragment{
         });
         return view;
     }
-
+*/
     protected void takePicture(){
         Context context = getActivity();
         PackageManager pm = context.getPackageManager();
@@ -139,8 +139,9 @@ public class AddPicture extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             addPhotoToGallery();
+            ((MainActivity)getActivity()).returnToFragment();
             // Show the full sized image.
-            setFullImageFromFilePath(mCurrentPhotoPath, mImageView);
+            //setFullImageFromFilePath(mCurrentPhotoPath, mImageView);
         } else {
             Toast.makeText(getActivity(), "Image Capture Failed", Toast.LENGTH_SHORT)
                     .show();

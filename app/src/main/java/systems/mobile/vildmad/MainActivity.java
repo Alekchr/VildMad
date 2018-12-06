@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements AddPicture
                     mTextMessage.setText(R.string.title_landscape);
                     return true;
                 case R.id.navigation_find:
-                    fragment = AddPicture.newInstance("hi", "hi");
+                    fragment = AddPicture.newInstance();
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:
@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements AddPicture
         transaction.replace(R.id.container_fragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public void returnToFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStack();
     }
 
     @Override
