@@ -6,10 +6,57 @@
     <string name="title_find">Find</string>
     <string name="title_more">Mere</string>
 
-    <string-array name="array_name">
-        <item>Array Item One</item>
-        <item>Array Item Two</item>
-        <item>Array Item Three</item>
+    <string-array name="planttypes">
+        <item>Krydderurter</item>
+        <item>Svampe</item>
+        <item>Bær</item>
+        <item>Frugter</item>
+        <item>Nødder</item>
+    </string-array>
+
+    <string-array name="krydderurter">
+        <item>Strandtrehage </item>
+        <item>Skvalderkål </item>
+        <item>Strandvejbred </item>
+        <item>Brændenælder </item>
+        <item>Skovløg </item>
+        <item>Strandasters </item>
+    </string-array>
+
+    <string-array name="svampe">
+        <item>Markchampignon </item>
+        <item>Almindelig kantarel </item>
+        <item>Tragt-kantarel </item>
+        <item>Stor trompetsvamp </item>
+        <item>Karl Johan </item>
+        <item>Rørhat </item>
+    </string-array>
+
+    <string-array name="baer">
+        <item>Havtorn </item>
+        <item>Guldbær </item>
+        <item>Æblerose </item>
+        <item>Mahonie </item>
+        <item>Brombær </item>
+        <item>Surbær </item>
+    </string-array>
+
+    <string-array name="frugter">
+        <item>Kastanjer  </item>
+        <item>Bog  </item>
+        <item>Rønnebær </item>
+        <item>Æble </item>
+        <item>Pærer </item>
+        <item>Agern </item>
+    </string-array>
+
+    <string-array name="nodder">
+        <item>Hasselnødder  </item>
+        <item>Valnødder  </item>
+        <item>Cashewnødder </item>
+        <item>Peanuts </item>
+        <item>Pistacienødder </item>
+        <item>Agern </item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
