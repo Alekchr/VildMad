@@ -6,7 +6,7 @@ public class CustomMarker {
 
     private MarkerOptions marker;
     private boolean isPublic;
-    private String id;
+    private int id;
     private String pictureUrl;
     private String description;
     private String title;
@@ -14,7 +14,7 @@ public class CustomMarker {
 
 
 
-    public CustomMarker(String id, double lng, double lat, boolean isPublic, String pictureUrl, String description, String titel) {
+    public CustomMarker(int id, double lng, double lat, boolean isPublic, String pictureUrl, String description, String titel) {
         this.id = id;
         this.lng = lng;
         this.lat = lat;
@@ -90,11 +90,11 @@ public class CustomMarker {
         isPublic = aPublic;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
