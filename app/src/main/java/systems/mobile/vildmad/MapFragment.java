@@ -222,7 +222,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 return false;
 
             }
@@ -275,43 +274,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     };
-    LocationListener locationListenerGps = new LocationListener() {
-        public void onLocationChanged(Location location) {
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
 
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
         {
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-            checkLocationPermission();
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
             MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(new LatLng(location.getLatitude(), location.getLongitude())).title(kind);
-
-
+            markerOption.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
 
 
             markerHashMap.put(mGoogleMap.addMarker(markerOption), markerHashMap.size());
 
-
             CustomMarker cm = new CustomMarker(markerHashMap.size(), markerOption.getPosition().latitude, markerOption.getPosition().longitude, bln, "pictureUrl", description, kind);
 
             db.writeNewMarker(cm);
-
 
         }
     }
