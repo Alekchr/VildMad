@@ -57,6 +57,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -80,6 +81,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     Spinner mSpinnerTitle;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
+    private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
+
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -213,17 +216,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
                 return false;
 
             }
         });
 
 
+
+
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
+
+                marker.getId();
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
                 new AlertDialog.Builder(getContext()).setTitle("Marker")
@@ -262,37 +268,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
     };
-    LocationListener locationListenerGps = new LocationListener() {
-        public void onLocationChanged(Location location) {
-        }
-
-        public void onProviderDisabled(String provider) {
-        }
-
-        public void onProviderEnabled(String provider) {
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    };
 
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
         {
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            MarkerOptions markerOption = new MarkerOptions();
+            markerOption.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
 
-            checkLocationPermission();
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListenerGps, null);
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-            MarkerOptions marker = new MarkerOptions();
-            marker.position(new LatLng(location.getLatitude(), location.getLongitude())).title(kind);
-            CustomMarker cm = new CustomMarker(marker.getPosition().latitude, marker.getPosition().longitude, bln, "pictureUrl", description, kind);
+            markerHashMap.put(mGoogleMap.addMarker(markerOption), markerHashMap.size());
+
+            CustomMarker cm = new CustomMarker(markerHashMap.size(), markerOption.getPosition().latitude, markerOption.getPosition().longitude, bln, "pictureUrl", description, kind);
+
             db.writeNewMarker(cm);
-
-
-            mGoogleMap.addMarker(marker);
 
         }
     }
