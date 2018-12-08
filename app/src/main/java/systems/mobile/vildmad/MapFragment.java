@@ -39,28 +39,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 
-import com.google.android.gms.common.api.GoogleApiClient;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -374,8 +368,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mAddPictureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Fragment fragment = AddPicture.newInstance();
-                    ((MainActivity) getActivity()).replaceFragment(fragment);
+                    AddPicture ap = AddPicture.newInstance(getActivity());
+                    ap.takePicture();
+                    ap.addPhotoToGallery();
                 }
             });
         }

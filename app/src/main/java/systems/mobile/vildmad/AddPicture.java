@@ -8,17 +8,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,60 +22,34 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AddPicture.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AddPicture#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AddPicture extends Fragment{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class AddPicture{
+
     static final int REQUEST_IMAGE_CAPTURE = 11111;
 
-
-    private String mParam1;
-    private String mParam2;
+    Activity activity;
 
     private String mCurrentPhotoPath;
-    private ImageView mImageView;
-    private OnFragmentInteractionListener mListener;
+    private OnactivityInteractionListener mListener;
 
-    public AddPicture() {
-        // Required empty public constructor
+    public AddPicture(Activity activity) {
+        this.activity = activity;
     }
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this activity using the provided parameters.
      *
-     * @return A new instance of fragment AddPicture.
+     * @return A new instance of activity AddPicture.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddPicture newInstance() {
-        AddPicture fragment = new AddPicture();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+    public static AddPicture newInstance(Activity activity) {
+        AddPicture addPicture = new AddPicture(activity);
+        return addPicture;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        takePicture();
-    }
     /*
         /**
-         * OnCreateView fragment override
+         * OnCreateView activity override
          * @param inflater
          * @param container
          * @param savedInstanceState
@@ -92,7 +61,7 @@ public class AddPicture extends Fragment{
         takePicture();
 
         View view;
-        view = inflater.inflate(R.layout.fragment_add_picture, container, false);
+        view = inflater.inflate(R.layout.activity_add_picture, container, false);
 
         // Set the image view
         mImageView = (ImageView)view.findViewById(R.id.cameraImageView);
@@ -109,7 +78,7 @@ public class AddPicture extends Fragment{
     }
 */
     protected void takePicture(){
-        Context context = getActivity();
+        Context context = activity;
         PackageManager pm = context.getPackageManager();
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -130,26 +99,14 @@ public class AddPicture extends Fragment{
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         fileUri);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                activity.startActivityForResult(takePictureIntent,
+                        REQUEST_IMAGE_CAPTURE);
             }
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            addPhotoToGallery();
-            ((MainActivity)getActivity()).returnToFragment();
-            // Show the full sized image.
-            //setFullImageFromFilePath(mCurrentPhotoPath, mImageView);
-        } else {
-            Toast.makeText(getActivity(), "Image Capture Failed", Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-
     protected File createImageFile() throws IOException {
-        Context context = getActivity();
+        Context context = activity;
         warnNoWritePermission(context);
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -171,7 +128,7 @@ public class AddPicture extends Fragment{
         File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
+        activity.sendBroadcast(mediaScanIntent);
     }
 
     /**
@@ -209,11 +166,13 @@ public class AddPicture extends Fragment{
         int result = ActivityCompat.checkSelfPermission(context, Manifest.permission
                 .WRITE_EXTERNAL_STORAGE);
         if (result != PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest
                     .permission.WRITE_EXTERNAL_STORAGE)){
-                Toast.makeText(getActivity().getApplicationContext(), "External Storage permission needed. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity.getApplicationContext(), "External Storage " +
+                        "permission needed. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
             } else {
-                ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission
+                ActivityCompat.requestPermissions(activity,new String[]{Manifest
+                        .permission
                         .WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_CAPTURE);
             }
         }
@@ -222,39 +181,23 @@ public class AddPicture extends Fragment{
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onactivityInteraction(uri);
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
+       /**
      * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
+     * activity to allow an interaction in this activity to be communicated
+     * to the activity and potentially other activitys contained in that
      * activity.
      * <p>
      * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * "http://developer.android.com/training/basics/activitys/communicating.html"
+     * >Communicating with Other activitys</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnactivityInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onactivityInteraction(Uri uri);
     }
 }

@@ -11,8 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements AddPicture
-        .OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener{
+import systems.mobile.vildmad.find_fragment.FindFragment;
+
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener{
 
     private TextView mTextMessage;
     Fragment fragment = null;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements AddPicture
                     mTextMessage.setText(R.string.title_landscape);
                     return true;
                 case R.id.navigation_find:
-                    fragment = AddPicture.newInstance();
+                    fragment = FindFragment.newInstance("", "");
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:

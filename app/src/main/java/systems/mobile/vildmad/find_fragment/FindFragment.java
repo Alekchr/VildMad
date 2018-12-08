@@ -1,4 +1,4 @@
-package systems.mobile.vildmad;
+package systems.mobile.vildmad.find_fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import systems.mobile.vildmad.R;
 
 public class FindFragment extends Fragment{
 
