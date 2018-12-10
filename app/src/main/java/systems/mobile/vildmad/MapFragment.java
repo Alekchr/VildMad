@@ -280,14 +280,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             db.writeNewMarker(cm);
 
             for(Object marker : db.returnAllMarkers() ) {
-                MarkerOptions allMarkerOptions = new MarkerOptions();
                 Double lati = ((CustomMarker) marker).getLat();
                 Double longti = ((CustomMarker) marker).getLng();
                 String descr = ((CustomMarker) marker).getTitle();
 
                 try {
                     mGoogleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(lati, longti))
+                            .position(new LatLng(longti, lati))
                             .title(descr));
                 }
                 catch (Exception e){
