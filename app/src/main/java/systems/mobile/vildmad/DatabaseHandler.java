@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,13 @@ public class DatabaseHandler {
 
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference("Marker");
-    List<CustomMarker> list;
+    List<CustomMarker> list = new ArrayList();
+    //List<CustomMarker> list;
 
     public DatabaseHandler(){
-    list = new ArrayList<>();
+
     }
+
 
     public void writeNewMarker(CustomMarker cm){
 
@@ -35,49 +38,36 @@ public class DatabaseHandler {
     }
     public void readAllMarkers(){
 
-
-
-        myRef.addChildEventListener(new ChildEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                list.clear();
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
-                    CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
-
-                    list.add(marker);
+                    try {
+                        CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
+                        list.add(marker);
+                    }
+                    catch (Exception e) {
+                        System.out.println("Error " + e.getMessage());
+                        }
                 }
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            public void onCancelled(DatabaseError databaseError) {}
+        };
+        myRef.addListenerForSingleValueEvent(valueEventListener);
     }
 
-    public CustomMarker returnMarkerByID(int id) {
+    public List returnAllMarkers() {
+        readAllMarkers();
+        return list;
+    }
+/*    public CustomMarker returnMarkerByID(int id) {
         readAllMarkers();
         for (int i = 0; i < list.size(); i++)
             if (list.get(i).getId() == id)
                 return list.get(i);
         return null;
 
-    }
+    }*/
 }

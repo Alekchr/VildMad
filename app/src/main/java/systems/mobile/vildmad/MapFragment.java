@@ -222,8 +222,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-
-
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             @Override
@@ -263,7 +261,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                 //move map camera
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20));
+                //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 20)); NEJ TAK
 
             }
         }
@@ -281,6 +279,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             db.writeNewMarker(cm);
 
+            for(Object marker : db.returnAllMarkers() ) {
+                MarkerOptions allMarkerOptions = new MarkerOptions();
+                Double lati = ((CustomMarker) marker).getLat();
+                Double longti = ((CustomMarker) marker).getLng();
+                String descr = ((CustomMarker) marker).getTitle();
+
+                try {
+                    mGoogleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(lati, longti))
+                            .title(descr));
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
         }
     }
 
