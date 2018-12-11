@@ -170,6 +170,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         }
     }
+    public void addAllMarkersFromDatabase() {
+        for(Object marker : db.returnAllMarkers() ) {
+            Double lati = ((CustomMarker) marker).getLat();
+            Double longti = ((CustomMarker) marker).getLng();
+            String descr = ((CustomMarker) marker).getTitle();
+
+            try {
+                mGoogleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(longti, lati))
+                        .title(descr));
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -199,6 +215,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mGoogleMap.setMyLocationEnabled(true);
         }
 
+
+
         //For adding a new marker on the current position
         mAddMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +227,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addAllMarkersFromDatabase(); // TESTING THE METHOD FOR LOADING DATABASE MARKERS
                 settingsOnClick();
             }
         });
@@ -279,20 +298,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             db.writeNewMarker(cm);
 
-            for(Object marker : db.returnAllMarkers() ) {
-                Double lati = ((CustomMarker) marker).getLat();
-                Double longti = ((CustomMarker) marker).getLng();
-                String descr = ((CustomMarker) marker).getTitle();
-
-                try {
-                    mGoogleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(longti, lati))
-                            .title(descr));
-                }
-                catch (Exception e){
-                    System.out.println(e);
-                }
-            }
         }
     }
 
