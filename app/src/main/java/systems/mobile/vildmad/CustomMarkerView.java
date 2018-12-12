@@ -27,12 +27,14 @@ public class CustomMarkerView implements GoogleMap.InfoWindowAdapter {
         View view = ((Activity)context).getLayoutInflater()
                 .inflate(R.layout.marker_selected_layout, null);
 
-        TextView name_tv = view.findViewById(R.id.mTypeText);
-        CustomMarker cm = (CustomMarker) marker.getTag();
-        name_tv.setText(cm.getDescription());
-        System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        System.out.println(cm.getDescription());
+        TextView type = view.findViewById(R.id.mTypeText);
+        TextView kind = view.findViewById(R.id.mKindText);
+        TextView descr = view.findViewById(R.id.mNoteTextView);
 
+        CustomMarker cm = (CustomMarker) marker.getTag();
+        type.setText(cm.getTitle());
+        kind.setText(cm.getPictureUrl()); // CHANGE THIS TO WHAT KIND IT IS LATER
+        descr.setText(cm.getDescription());
 
         return view;
     }

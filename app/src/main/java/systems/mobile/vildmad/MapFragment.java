@@ -194,7 +194,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 Marker m = mGoogleMap.addMarker(markerOptions);
                 m.setTag(info);
-                m.showInfoWindow();
             }
             catch (Exception e){
                 System.out.println(e);
@@ -304,7 +303,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
         {
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(new LatLng(47.5287132, -121.8253906))
+            markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
                     .title(kind);
 
             CustomMarker cm = new CustomMarker();
@@ -317,7 +316,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             Marker m = mGoogleMap.addMarker(markerOptions);
             m.setTag(cm);
-            m.showInfoWindow();
 
 
             db.writeNewMarker(cm);
