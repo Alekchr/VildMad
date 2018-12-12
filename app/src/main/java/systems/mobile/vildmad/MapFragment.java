@@ -1,6 +1,7 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -36,6 +37,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -263,6 +265,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 marker.getId();
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
+
+                TextView type = markerSelectedLayout.findViewById(R.id.mTypeText);
+                TextView kind = markerSelectedLayout.findViewById(R.id.mKindText);
+                TextView descr = markerSelectedLayout.findViewById(R.id.mNoteTextView);
+
+                CustomMarker cm = (CustomMarker) marker.getTag();
+                type.setText(cm.getTitle());
+                kind.setText(cm.getPictureUrl()); // CHANGE THIS TO WHAT KIND IT IS LATER
+                descr.setText(cm.getDescription());
+
                 new AlertDialog.Builder(getContext()).setTitle("Marker")
                         .setCancelable(false)
                         .setView(markerSelectedLayout)
