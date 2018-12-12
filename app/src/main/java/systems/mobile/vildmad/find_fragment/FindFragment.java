@@ -5,7 +5,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import systems.mobile.vildmad.R;
 
@@ -14,7 +19,8 @@ public class FindFragment extends Fragment{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    ArrayAdapter<String> adapter;
+    List<String> plants = new ArrayList<>();
     private ListView mListView;
 
     public FindFragment() {
@@ -29,27 +35,66 @@ public class FindFragment extends Fragment{
      * @param param2 Parameter 2.
      * @return A new instance of fragment FindFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static FindFragment newInstance(String param1, String param2) {
         FindFragment fragment = new FindFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String[] planttypes = getResources().getStringArray(R.array.planttypes);
+        for (String type:planttypes
+             ) { plants.add(type);
+
+             switch(type){
+            case "Svampe":
+                for (String svamp:getResources().getStringArray(R.array.svampe)
+                     ) {plants.add(svamp);
+                }
+                break;
+
+            case "Frugter":
+                for (String frugt:getResources().getStringArray(R.array.frugter)
+                        ) {plants.add(frugt);
+                }
+                break;
+
+            case "Krydderurter":
+                for (String krydderurter:getResources().getStringArray(R.array.krydderurter)
+                        ) {plants.add(krydderurter);
+                }
+                break;
+
+            case "Bær":
+                for (String bær:getResources().getStringArray(R.array.baer)
+                        ) {plants.add(bær);
+                }
+                break;
+
+            case "Nødder":
+                for (String nødder:getResources().getStringArray(R.array.nodder)
+                        ) {plants.add(nødder);
+                }
+                break;
+
+            }
+        }
+
+
         super.onCreate(savedInstanceState);
 
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
-        view = inflater.inflate(R.layout.fragment_add_picture, container, false);
-
+        view = inflater.inflate(R.layout.fragment_find, container, false);
+        mListView = view.findViewById(R.id.plantListView);
+        adapter = new PlantListAdapter(getActivity(), R.layout.plant_view_layout, plants);
+        mListView.setAdapter(adapter);
         return view;
     }
     @Override
