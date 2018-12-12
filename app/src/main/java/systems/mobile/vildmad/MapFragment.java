@@ -80,7 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
-    Spinner mSpinnerTitle;
+    CheckBox mPublicCheckBox;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
@@ -268,7 +268,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 CustomMarker cm = (CustomMarker) marker.getTag();
                 type.setText(cm.getTitle());
-                kind.setText(cm.getPictureUrl()); // CHANGE THIS TO WHAT KIND IT IS LATER
+                kind.setText(cm.getType()); // CHANGE THIS TO WHAT KIND IT IS LATER
                 descr.setText(cm.getDescription());
 
                 new AlertDialog.Builder(getContext()).setTitle("Marker")
@@ -308,7 +308,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type) {
         {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
@@ -316,6 +316,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             CustomMarker cm = new CustomMarker();
             //info.setPictureUrl(img);
             cm.setDescription(description);
+            cm.setType(type);
             cm.setTitle(kind);
 
             Marker m = mGoogleMap.addMarker(markerOptions);
@@ -382,7 +383,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         bool = true;
                                     else
                                         bool = false;
-                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString());
+                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
                                 }
                             }
                     )
