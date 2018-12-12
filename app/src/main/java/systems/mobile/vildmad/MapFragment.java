@@ -183,16 +183,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             try {
                 MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(new LatLng(longti, lati))
-                        .title(descr);
+                markerOptions.position(new LatLng(longti, lati));
 
                 CustomMarker info = new CustomMarker();
                 //info.setPictureUrl(img);
                 info.setDescription(descr);
                 info.setTitle(title);
-
-                CustomMarkerView customInfoWindow = new CustomMarkerView(getActivity());
-                mGoogleMap.setInfoWindowAdapter(customInfoWindow);
 
                 Marker m = mGoogleMap.addMarker(markerOptions);
                 m.setTag(info);
@@ -315,16 +311,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
         {
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))
-                    .title(kind);
+            markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
             CustomMarker cm = new CustomMarker();
             //info.setPictureUrl(img);
             cm.setDescription(description);
             cm.setTitle(kind);
-
-            CustomMarkerView customInfoWindow = new CustomMarkerView(getActivity());
-            mGoogleMap.setInfoWindowAdapter(customInfoWindow);
 
             Marker m = mGoogleMap.addMarker(markerOptions);
             m.setTag(cm);
