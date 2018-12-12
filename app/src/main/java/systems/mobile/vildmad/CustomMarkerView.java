@@ -30,6 +30,9 @@ public class CustomMarkerView implements GoogleMap.InfoWindowAdapter {
         TextView name_tv = view.findViewById(R.id.mTypeText);
         CustomMarker cm = (CustomMarker) marker.getTag();
         name_tv.setText(cm.getDescription());
+        System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        System.out.println(cm.getDescription());
+
 
         return view;
     }

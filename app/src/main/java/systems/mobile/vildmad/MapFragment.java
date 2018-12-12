@@ -175,7 +175,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
             String descr = ((CustomMarker) marker).getDescription();
-            String img = ((CustomMarker) marker).getPictureUrl();
+            //String img = ((CustomMarker) marker).getPictureUrl();
             String title = ((CustomMarker) marker).getTitle();
 
 
@@ -185,7 +185,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .title(descr);
 
                 CustomMarker info = new CustomMarker();
-                info.setPictureUrl(img);
+                //info.setPictureUrl(img);
                 info.setDescription(descr);
                 info.setTitle(title);
 
@@ -194,8 +194,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 Marker m = mGoogleMap.addMarker(markerOptions);
                 m.setTag(info);
-                System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                System.out.println(m);
                 m.showInfoWindow();
             }
             catch (Exception e){
@@ -305,13 +303,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
         {
-            MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(new LatLng(47.5287132, -121.8253906))
+                    .title(kind);
 
+            CustomMarker cm = new CustomMarker();
+            //info.setPictureUrl(img);
+            cm.setDescription(description);
+            cm.setTitle(kind);
 
-            markerHashMap.put(mGoogleMap.addMarker(markerOption), markerHashMap.size());
+            CustomMarkerView customInfoWindow = new CustomMarkerView(getActivity());
+            mGoogleMap.setInfoWindowAdapter(customInfoWindow);
 
-            CustomMarker cm = new CustomMarker(markerHashMap.size(), markerOption.getPosition().latitude, markerOption.getPosition().longitude, bln, "pictureUrl", description, kind);
+            Marker m = mGoogleMap.addMarker(markerOptions);
+            m.setTag(cm);
+            m.showInfoWindow();
+
 
             db.writeNewMarker(cm);
 
