@@ -174,12 +174,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for(Object marker : db.returnAllMarkers() ) {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
-            String descr = ((CustomMarker) marker).getTitle();
+            String descr = ((CustomMarker) marker).getDescription();
+            String img = ((CustomMarker) marker).getPictureUrl();
+            String title = ((CustomMarker) marker).getTitle();
+
 
             try {
-                mGoogleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(longti, lati))
-                        .title(descr));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(longti, lati))
+                        .title(descr);
+
+                CustomMarker info = new CustomMarker();
+                info.setPictureUrl(img);
+                info.setDescription(descr);
+                info.setTitle(title);
+
+                CustomMarkerView customInfoWindow = new CustomMarkerView(getActivity());
+                mGoogleMap.setInfoWindowAdapter(customInfoWindow);
+
+                Marker m = mGoogleMap.addMarker(markerOptions);
+                m.setTag(info);
+                System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                System.out.println(m);
+                m.showInfoWindow();
             }
             catch (Exception e){
                 System.out.println(e);
