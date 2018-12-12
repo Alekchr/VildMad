@@ -20,7 +20,7 @@
     android:layout_marginBottom="65dp"
     android:textColor="#FFFFFF"
     android:background="#90b06d"
-    android:text="Add Marker" />
+    android:text="Tilføj et punkt" />
 
     <Button
     android:id="@+id/settingsButton"

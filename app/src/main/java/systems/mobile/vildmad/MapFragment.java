@@ -262,6 +262,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
 
+                Button closeMarkerDialog = markerSelectedLayout.findViewById(R.id.closeMarkerDialogBtn);
                 TextView type = markerSelectedLayout.findViewById(R.id.mTypeText);
                 TextView kind = markerSelectedLayout.findViewById(R.id.mKindText);
                 TextView descr = markerSelectedLayout.findViewById(R.id.mNoteTextView);
@@ -271,18 +272,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 kind.setText(cm.getType()); // CHANGE THIS TO WHAT KIND IT IS LATER
                 descr.setText(cm.getDescription());
 
-                new AlertDialog.Builder(getContext()).setTitle("Marker")
+                final AlertDialog markerDialog = new AlertDialog.Builder(getContext()).setTitle("Marker")
                         .setCancelable(false)
                         .setView(markerSelectedLayout)
-                        .setNegativeButton("No",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        //do nothing
-                                        dialog.dismiss();
-                                    }
-                                }
-                        ).show();
-
+                        .show();
+                closeMarkerDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        markerDialog.dismiss();
+                    }
+                });
                 return false;
             }
 
@@ -410,20 +409,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void settingsOnClick () {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
-            new AlertDialog.Builder(getContext()).setTitle("Confirm")
-                    .setMessage("Do you want to add Marker?")
+            Button saveSettings = settingsLayout.findViewById(R.id.saveSettingsBtn);
+            Button closeSettings = settingsLayout.findViewById(R.id.closeSettingsBtn);
+            final AlertDialog settingsDialog = new AlertDialog.Builder(getContext()).setTitle("Indstillinger")
                     .setCancelable(false)
                     .setView(settingsLayout)
-                    .setNegativeButton("Close",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //do nothing
-                                    dialog.dismiss();
-                                }
-                            }
-                    ).show();
+                    .show();
 
-
+            saveSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    settingsDialog.dismiss(); //TO BE FIXED
+                }
+            });
+            closeSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    settingsDialog.dismiss();
+                }
+            });
         }
 
         public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;

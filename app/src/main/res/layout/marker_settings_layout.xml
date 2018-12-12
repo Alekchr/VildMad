@@ -39,4 +39,21 @@
         android:text="Vis andres fund"
         android:textColor="#90b06d"
         android:buttonTint="#90b06d"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/saveSettingsBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:text="Gem ændringer" />
+        <Button
+            android:id="@+id/closeSettingsBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:text="Tilbage" />
+    </LinearLayout>
 </LinearLayout>
