@@ -49,6 +49,22 @@
         android:inputType="textEmailAddress"
         android:singleLine="false"
         android:background="#F3F3F3"/>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+    <Button
+        android:id="@+id/addMarkerBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".50"
+        android:text="Tilføj Punkt" />
+    <Button
+        android:id="@+id/closeAddMarkerBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".50"
+        android:text="Tilbage" />
+    </LinearLayout>
 
 </LinearLayout>

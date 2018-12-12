@@ -371,31 +371,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 }
             });
-            new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
+            Button addNewMarker = addMarkerLayout.findViewById(R.id.addMarkerBtn);
+            Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
+
+            final AlertDialog addMarkerDialog = new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
                     .setCancelable(false)
                     .setView(addMarkerLayout)
-                    .setPositiveButton("Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    boolean bool;
-                                    // add marker with LatLng geo
-                                    if (mCheckBox.isChecked())
-                                        bool = true;
-                                    else
-                                        bool = false;
-                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
-                                }
-                            }
-                    )
-                    .setNegativeButton("No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //do nothing
-                                    dialog.dismiss();
-                                }
-                            }
-                    ).show();
-
+                    .show();
+            addNewMarker.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean bool;
+                    // add marker with LatLng geo
+                    if (mCheckBox.isChecked())
+                        bool = true;
+                    else
+                        bool = false;
+                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
+                    addMarkerDialog.dismiss();
+                }
+            });
+            closeAddMarker.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMarkerDialog.dismiss();
+                }
+            });
             mAddPictureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
