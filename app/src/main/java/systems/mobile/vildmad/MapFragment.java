@@ -1,6 +1,7 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -36,6 +37,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -78,7 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
-    Spinner mSpinnerTitle;
+    CheckBox mPublicCheckBox;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
@@ -174,12 +176,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for(Object marker : db.returnAllMarkers() ) {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
-            String descr = ((CustomMarker) marker).getTitle();
+            String descr = ((CustomMarker) marker).getDescription();
+            //String img = ((CustomMarker) marker).getPictureUrl();
+            String title = ((CustomMarker) marker).getTitle();
+
 
             try {
-                mGoogleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(longti, lati))
-                        .title(descr));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(longti, lati));
+
+                CustomMarker info = new CustomMarker();
+                //info.setPictureUrl(img);
+                info.setDescription(descr);
+                info.setTitle(title);
+
+                Marker m = mGoogleMap.addMarker(markerOptions);
+                m.setTag(info);
             }
             catch (Exception e){
                 System.out.println(e);
@@ -249,6 +261,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 marker.getId();
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
+
+                TextView type = markerSelectedLayout.findViewById(R.id.mTypeText);
+                TextView kind = markerSelectedLayout.findViewById(R.id.mKindText);
+                TextView descr = markerSelectedLayout.findViewById(R.id.mNoteTextView);
+
+                CustomMarker cm = (CustomMarker) marker.getTag();
+                type.setText(cm.getTitle());
+                kind.setText(cm.getType()); // CHANGE THIS TO WHAT KIND IT IS LATER
+                descr.setText(cm.getDescription());
+
                 new AlertDialog.Builder(getContext()).setTitle("Marker")
                         .setCancelable(false)
                         .setView(markerSelectedLayout)
@@ -286,15 +308,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type) {
         {
-            MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
+            CustomMarker cm = new CustomMarker();
+            //info.setPictureUrl(img);
+            cm.setDescription(description);
+            cm.setType(type);
+            cm.setTitle(kind);
 
-            markerHashMap.put(mGoogleMap.addMarker(markerOption), markerHashMap.size());
+            Marker m = mGoogleMap.addMarker(markerOptions);
+            m.setTag(cm);
 
-            CustomMarker cm = new CustomMarker(markerHashMap.size(), markerOption.getPosition().latitude, markerOption.getPosition().longitude, bln, "pictureUrl", description, kind);
 
             db.writeNewMarker(cm);
 
@@ -356,7 +383,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         bool = true;
                                     else
                                         bool = false;
-                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString());
+                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
                                 }
                             }
                     )

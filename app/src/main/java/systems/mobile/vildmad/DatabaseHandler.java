@@ -32,7 +32,7 @@ public class DatabaseHandler {
 
         String id = myRef.push().getKey();
 
-        CustomMarker customMarker = new CustomMarker(cm.getId(), cm.getLng(), cm.getLat(), cm.isPublic(), cm.getPictureUrl(), cm.getDescription(), cm.getTitle());
+        CustomMarker customMarker = new CustomMarker(cm.getId(), cm.getLng(), cm.getLat(), cm.isPublic(), cm.getPictureUrl(), cm.getDescription(), cm.getTitle(), cm.getType());
 
         myRef.push().setValue(customMarker);
     }
