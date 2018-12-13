@@ -15,27 +15,8 @@ public class CustomMarker {
     private String type;
     private double lng;
 
-
-
     public CustomMarker() {
-        this.id = this.id;
-        this.lng = this.lng;
-        this.lat = this.lat;
-        this.isPublic = isPublic;
-        this.pictureUrl = this.pictureUrl;
-        this.description = this.description;
-        this.title = this.title;
-        this.type = this.type;
-    }
 
-    public CustomMarker(double lng, double lat, boolean isPublic, Uri pictureUrl, String description, String title, String type) {
-        this.lng = lng;
-        this.lat = lat;
-        this.isPublic = isPublic;
-        this.pictureUrl = pictureUrl;
-        this.description = description;
-        this.title = title;
-        this.type = type;
     }
 
     public String getDescription() {

@@ -38,9 +38,8 @@ public class DatabaseHandler {
             uploadTask = locationPath.putFile(file);
         }
 
-        CustomMarker customMarker = new CustomMarker();
 
-        myRef.push().setValue(customMarker);
+        myRef.push().setValue(cm);
     }
 
 
