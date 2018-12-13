@@ -37,14 +37,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_landscape:
-                    mTextMessage.setText(R.string.title_landscape);
+                    fragment = HomeFragment.newInstance("hi", "hi");
                     return true;
                 case R.id.navigation_find:
                     fragment = FindFragment.newInstance("", "");
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:
-                    mTextMessage.setText(R.string.title_more);
+                    fragment = HomeFragment.newInstance("hi", "hi");
                     return true;
             }
             return false;

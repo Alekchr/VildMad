@@ -2,9 +2,11 @@ package systems.mobile.vildmad.find_fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -12,6 +14,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import systems.mobile.vildmad.MainActivity;
+import systems.mobile.vildmad.MapFragment;
 import systems.mobile.vildmad.R;
 
 public class FindFragment extends Fragment{
@@ -85,6 +89,7 @@ public class FindFragment extends Fragment{
         }
 
 
+
         super.onCreate(savedInstanceState);
 
     }
@@ -95,6 +100,20 @@ public class FindFragment extends Fragment{
         mListView = view.findViewById(R.id.plantListView);
         adapter = new PlantListAdapter(getActivity(), plants);
         mListView.setAdapter(adapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> AV, View v, int pos,
+                                    long id) {
+                Log.d("", ((PlantItem)plants.get(pos)).getplantName());
+                ((MainActivity)getActivity()).replaceFragment(MapFragment.newInstance("hi", "hi"));
+
+
+            }
+
+        });
+
+
         return view;
     }
     @Override
