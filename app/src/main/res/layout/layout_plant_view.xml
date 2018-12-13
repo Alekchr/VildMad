@@ -7,20 +7,21 @@
 
     <TextView
         android:gravity="center"
-        android:textAlignment="center"
+        android:textAlignment="textStart"
         android:text="Plant name"
+        android:paddingLeft="10dp"
         android:id="@+id/plantName"
-        android:layout_weight="20"
+        android:layout_weight="15"
         android:layout_width="match_parent"
-        android:layout_height="60dp" />
+        android:layout_height="50dp" />
 
     <ImageView
         android:gravity="center"
         android:id="@+id/imagePlant"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:orientation="vertical"
-        android:layout_weight="80"
+        android:layout_weight="85"
         android:src="@drawable/placeholder"/>
 
 

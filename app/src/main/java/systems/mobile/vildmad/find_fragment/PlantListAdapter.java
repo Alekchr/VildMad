@@ -3,50 +3,90 @@ package systems.mobile.vildmad.find_fragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import systems.mobile.vildmad.R;
 
 
-public class PlantListAdapter extends ArrayAdapter<String> {
+public class PlantListAdapter extends BaseAdapter {
+
+    private static final int PLANT_ITEM = 0;
+    private static final int HEADER = 1;
     private Context context;
-    private int resource;
-    private List<String> plants;
+    private ArrayList<Object> plants;
+
+    public PlantListAdapter() {
+        super();
+    }
 
 
-    public PlantListAdapter(@NonNull Context context, int resource, List<String> plants) {
-        super(context, resource, plants);
+    public PlantListAdapter(@NonNull Context context, ArrayList<Object> plants) {
         this.plants = plants;
         this.context = context;
-        this.resource = resource;
+    }
+
+    @Override
+    public int getItemViewType(int position){
+        Log.d("", "Inside getitemviewtype");
+        if(plants.get(position) instanceof PlantItem){
+            Log.d("", "returned plant");
+            return PLANT_ITEM;
+
+        }
+        else{
+            return HEADER;
+        }
+    }
+
+    @Override
+    public int getCount() {
+        return plants.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return plants.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String plantName;
-        plantName = getItem(position);
-
         LayoutInflater inflater = LayoutInflater.from(this.context);
-        convertView = inflater.inflate(this.resource, parent, false);
 
-        TextView twPlantName = convertView.findViewById(R.id.plantName);
+        switch(getItemViewType(position)){
+            case PLANT_ITEM:
+                convertView = inflater.inflate(R.layout.layout_plant_view, parent, false);
+                TextView twPlantName = convertView.findViewById(R.id.plantName);
+                twPlantName.setText(((PlantItem)plants.get(position)).getplantName());
+                break;
+            case HEADER:
+                convertView = inflater.inflate(R.layout.layout_plant_section, parent, false);
+                TextView twSectionName = convertView.findViewById(R.id.sectionName);
+                twSectionName.setText(plants.get(position).toString());
+                break;
+        }
 
         ImageView iwPlantImg = convertView.findViewById(R.id.imagePlant);
 
 
-        twPlantName.setText(plantName);
+
 
         return convertView;
     }
 
-    public static boolean isNegative(double d) {
-        return Double.compare(d, 0.0) < 0;
-    }
 }
