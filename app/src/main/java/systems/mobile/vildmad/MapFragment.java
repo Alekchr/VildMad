@@ -131,12 +131,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mLocationRequest.setInterval(5000);
             } else if (batpercentage < 50 && batpercentage > 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                mLocationRequest.setInterval(10000);
+                mLocationRequest.setInterval(20000);
                 mLocationRequest.setFastestInterval(5000);
             } else if (batpercentage <= 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-                mLocationRequest.setInterval(10000);
-                mLocationRequest.setFastestInterval(5000);
+                mLocationRequest.setInterval(60000);
+                mLocationRequest.setFastestInterval(10000);
             }
         }
     };
