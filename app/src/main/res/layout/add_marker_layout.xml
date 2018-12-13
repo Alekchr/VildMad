@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:entries="@array/planttypes"
-        android:theme="@style/spinnerTheme"/>
+        android:textColor="#FFFFFF"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -26,8 +26,7 @@
     <Spinner
         android:id="@+id/spinner_kind"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:theme="@style/spinnerTheme2"/>
+        android:layout_height="40dp"/>
     </RelativeLayout>
     <CheckBox
         android:id="@+id/mPublicCheckBox"
@@ -55,16 +54,21 @@
         android:orientation="horizontal">
     <Button
         android:id="@+id/addMarkerBtn"
+        android:background="@drawable/dobuttons"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_height="37dp"
         android:layout_weight=".50"
-        android:text="Tilføj Punkt" />
+        android:textColor="#FFFFFF"
+        android:text="Tilføj Punkt"/>
     <Button
         android:id="@+id/closeAddMarkerBtn"
+        android:background="@drawable/backbuttons"
+        android:layout_marginLeft="2dp"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="37dp"
         android:layout_weight=".50"
-        android:text="Tilbage" />
+        android:text="Tilbage"/>
     </LinearLayout>
 
 </LinearLayout>

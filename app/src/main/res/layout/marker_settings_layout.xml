@@ -45,14 +45,19 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/saveSettingsBtn"
+            android:background="@drawable/dobuttons"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:layout_height="37dp"
             android:layout_weight=".50"
+            android:textColor="#FFFFFF"
             android:text="Gem ændringer" />
         <Button
             android:id="@+id/closeSettingsBtn"
+            android:background="@drawable/backbuttons"
+            android:layout_marginLeft="2dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="37dp"
             android:layout_weight=".50"
             android:text="Tilbage" />
     </LinearLayout>
