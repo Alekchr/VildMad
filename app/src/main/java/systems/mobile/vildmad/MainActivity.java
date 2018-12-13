@@ -1,5 +1,6 @@
 package systems.mobile.vildmad;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import systems.mobile.vildmad.find_fragment.FindFragment;
+import systems.mobile.vildmad.login.LoginActivity;
+import systems.mobile.vildmad.login.SignupActivity;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener{
 
@@ -57,8 +60,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
 
+}
     public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

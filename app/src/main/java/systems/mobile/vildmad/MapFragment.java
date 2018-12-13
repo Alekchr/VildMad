@@ -144,6 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         mapFrag = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
         mView = inflater.inflate(R.layout.fragment_map, container, false);
+
         return mView;
     }
 
@@ -245,6 +246,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
+
 
                 marker.getId();
                 LayoutInflater inflater = getActivity().getLayoutInflater();
