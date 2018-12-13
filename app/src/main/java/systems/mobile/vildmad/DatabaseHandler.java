@@ -21,6 +21,7 @@ import java.util.List;
 
 public class DatabaseHandler {
 
+    private static DatabaseHandler databaseHandler;
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference("Marker");
     List<CustomMarker> list = new ArrayList();
@@ -28,8 +29,16 @@ public class DatabaseHandler {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     UploadTask uploadTask;
-    public DatabaseHandler(){
 
+    private DatabaseHandler(){
+
+    }
+
+    public static synchronized DatabaseHandler getInstance() {
+        if (databaseHandler == null) {
+            databaseHandler = new DatabaseHandler();
+        }
+        return databaseHandler;
     }
 
 
@@ -48,7 +57,8 @@ public class DatabaseHandler {
 
 
     public void readAllMarkers(){
-        ValueEventListener valueEventListener = new ValueEventListener() {
+        list.clear();
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
@@ -64,23 +74,23 @@ public class DatabaseHandler {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        };
-        myRef.addListenerForSingleValueEvent(valueEventListener);
+        });
+
     }
 
-    public List returnAllMarkers() {
-        readAllMarkers();
+    public List returnMarkerList() {
         return list;
     }
 
     public List<CustomMarker> returnMarkerByPlant(final String plantName) {
+        list.clear();
         myRef.orderByChild("title").equalTo(plantName).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
                             try {
                                 CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
-                                selectedList.add(marker);
+                                list.add(marker);
                                 Log.d("Custom markers", list.toString());
                             }
                             catch (Exception e) {

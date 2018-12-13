@@ -50,7 +50,7 @@ public class FindFragment extends Fragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        db = new DatabaseHandler();
+        db = DatabaseHandler.getInstance();
         String[] planttypes = getResources().getStringArray(R.array.planttypes);
         for (String type:planttypes
              ) { plants.add(type);

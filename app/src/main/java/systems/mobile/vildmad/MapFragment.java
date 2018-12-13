@@ -63,6 +63,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -92,6 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
     private FirebaseAuth auth;
+
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -126,9 +129,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int level = intent.getIntExtra("level", 0);
             int scale = intent.getIntExtra("scale", 100);
             int batpercentage = level * 100 / scale;
-            if (batpercentage > 50) {
+            if (batpercentage >= 50) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);
+                mLocationRequest.setFastestInterval(1000);
             } else if (batpercentage < 50 && batpercentage > 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 mLocationRequest.setInterval(20000);
@@ -144,6 +148,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = DatabaseHandler.getInstance();
+        auth = FirebaseAuth.getInstance();
+        Log.d("Run", "Oncreate");
 
     }
 
@@ -164,8 +171,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = (MapView) mView.findViewById(R.id.map);
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
-        db = new DatabaseHandler();
-        auth = FirebaseAuth.getInstance();
+
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -183,7 +189,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
     public void addAllMarkersFromDatabase() {
-        for(Object marker : db.returnAllMarkers() ) {
+
+        List<Object> markers = db.returnMarkerList();
+        mGoogleMap.clear();
+        for(Object marker : markers ) {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
             String descr = ((CustomMarker) marker).getDescription();
@@ -206,7 +215,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 m.setTag(info);
             }
             catch (Exception e){
-                System.out.println(e);
+                Log.d("Fail", "Failed to add markers.");
             }
         }
     }
@@ -252,7 +261,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addAllMarkersFromDatabase(); // TESTING THE METHOD FOR LOADING DATABASE MARKERS
+
                 settingsOnClick();
             }
         });
@@ -300,6 +309,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
 
         });
+
+        addAllMarkersFromDatabase();
 
     }
 
