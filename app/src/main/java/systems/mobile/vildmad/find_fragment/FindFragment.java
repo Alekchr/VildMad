@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,8 @@ public class FindFragment extends Fragment{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    ArrayAdapter<String> adapter;
-    List<String> plants = new ArrayList<>();
+    BaseAdapter adapter;
+    ArrayList<Object> plants = new ArrayList<>();
     private ListView mListView;
 
     public FindFragment() {
@@ -53,31 +53,31 @@ public class FindFragment extends Fragment{
              switch(type){
             case "Svampe":
                 for (String svamp:getResources().getStringArray(R.array.svampe)
-                     ) {plants.add(svamp);
+                     ) {plants.add(new PlantItem(svamp, "x"));
                 }
                 break;
 
             case "Frugter":
                 for (String frugt:getResources().getStringArray(R.array.frugter)
-                        ) {plants.add(frugt);
+                        ) {plants.add(new PlantItem(frugt, ""));
                 }
                 break;
 
             case "Krydderurter":
                 for (String krydderurter:getResources().getStringArray(R.array.krydderurter)
-                        ) {plants.add(krydderurter);
+                        ) {plants.add(new PlantItem(krydderurter, ""));
                 }
                 break;
 
             case "Bær":
                 for (String bær:getResources().getStringArray(R.array.baer)
-                        ) {plants.add(bær);
+                        ) {plants.add(new PlantItem(bær, ""));
                 }
                 break;
 
             case "Nødder":
                 for (String nødder:getResources().getStringArray(R.array.nodder)
-                        ) {plants.add(nødder);
+                        ) {plants.add(new PlantItem(nødder, ""));
                 }
                 break;
 
@@ -93,7 +93,7 @@ public class FindFragment extends Fragment{
         View view;
         view = inflater.inflate(R.layout.fragment_find, container, false);
         mListView = view.findViewById(R.id.plantListView);
-        adapter = new PlantListAdapter(getActivity(), R.layout.plant_view_layout, plants);
+        adapter = new PlantListAdapter(getActivity(), plants);
         mListView.setAdapter(adapter);
         return view;
     }
