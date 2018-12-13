@@ -24,6 +24,7 @@ public class DatabaseHandler {
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference("Marker");
     List<CustomMarker> list = new ArrayList();
+    List<CustomMarker> selectedList = new ArrayList();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     UploadTask uploadTask;
@@ -47,7 +48,6 @@ public class DatabaseHandler {
 
 
     public void readAllMarkers(){
-
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -74,17 +74,14 @@ public class DatabaseHandler {
     }
 
     public List<CustomMarker> returnMarkerByPlant(final String plantName) {
-    final List<CustomMarker> markerList = new ArrayList();
-        myRef.child("title").equalTo(plantName).addValueEventListener(new ValueEventListener() {
-
+        myRef.orderByChild("title").equalTo(plantName).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
                             try {
                                 CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
-                                markerList.add(marker);
-                                Log.d("Custom markers", markerList.toString());
-                                Log.d("FAil", "DU KANA IKKNOGGNN FFKFKKE KEK EKEKKE KE KE KE KE");
+                                selectedList.add(marker);
+                                Log.d("Custom markers", list.toString());
                             }
                             catch (Exception e) {
                                 System.out.println("Error " + e.getMessage());
@@ -97,13 +94,7 @@ public class DatabaseHandler {
                     }
                 });
 
-
-
-
-        return markerList;
-
-
-
+        return list;
     }
 
 /*            @Override

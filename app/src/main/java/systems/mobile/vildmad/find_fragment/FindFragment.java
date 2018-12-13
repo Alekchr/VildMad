@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import systems.mobile.vildmad.DatabaseHandler;
-import systems.mobile.vildmad.MainActivity;
-import systems.mobile.vildmad.MapFragment;
 import systems.mobile.vildmad.R;
 
 public class FindFragment extends Fragment{
@@ -110,7 +108,6 @@ public class FindFragment extends Fragment{
                                     long id) {
                 //Log.d("", ((PlantItem)plants.get(pos)).getplantName());
                 db.returnMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
-                ((MainActivity)getActivity()).replaceFragment(MapFragment.newInstance("hi", "hi"));
 
 
             }
