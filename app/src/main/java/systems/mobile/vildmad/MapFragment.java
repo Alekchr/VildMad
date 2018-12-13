@@ -56,6 +56,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.util.ArrayList;
@@ -84,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
+    private FirebaseAuth auth;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -157,6 +159,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
         db = new DatabaseHandler();
+        auth = FirebaseAuth.getInstance();
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -319,6 +322,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             CustomMarker cm = new CustomMarker();
             //info.setPictureUrl(img);
+            cm.setId(auth.getCurrentUser().getUid());
             cm.setDescription(description);
             cm.setType(type);
             cm.setPublic(bln);
