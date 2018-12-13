@@ -1,6 +1,7 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -36,6 +37,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -78,7 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
-    Spinner mSpinnerTitle;
+    CheckBox mPublicCheckBox;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
@@ -175,12 +177,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for(Object marker : db.returnAllMarkers() ) {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
-            String descr = ((CustomMarker) marker).getTitle();
+            String descr = ((CustomMarker) marker).getDescription();
+            //String img = ((CustomMarker) marker).getPictureUrl();
+            String title = ((CustomMarker) marker).getTitle();
+
 
             try {
-                mGoogleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(longti, lati))
-                        .title(descr));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(longti, lati));
+
+                CustomMarker info = new CustomMarker();
+                //info.setPictureUrl(img);
+                info.setDescription(descr);
+                info.setTitle(title);
+
+                Marker m = mGoogleMap.addMarker(markerOptions);
+                m.setTag(info);
             }
             catch (Exception e){
                 System.out.println(e);
@@ -210,6 +222,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             } else {
                 //Request Location Permission
                 checkLocationPermission();
+                checkCameraPermission();
             }
         } else {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
@@ -251,18 +264,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 marker.getId();
                 LayoutInflater inflater = getActivity().getLayoutInflater();
                 View markerSelectedLayout = inflater.inflate(R.layout.marker_selected_layout, null);
-                new AlertDialog.Builder(getContext()).setTitle("Marker")
+
+                Button closeMarkerDialog = markerSelectedLayout.findViewById(R.id.closeMarkerDialogBtn);
+                TextView type = markerSelectedLayout.findViewById(R.id.mTypeText);
+                TextView kind = markerSelectedLayout.findViewById(R.id.mKindText);
+                TextView descr = markerSelectedLayout.findViewById(R.id.mNoteTextView);
+
+                CustomMarker cm = (CustomMarker) marker.getTag();
+                type.setText(cm.getTitle());
+                kind.setText(cm.getType()); // CHANGE THIS TO WHAT KIND IT IS LATER
+                descr.setText(cm.getDescription());
+
+                final AlertDialog markerDialog = new AlertDialog.Builder(getContext()).setTitle("Marker")
                         .setCancelable(false)
                         .setView(markerSelectedLayout)
-                        .setNegativeButton("No",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        //do nothing
-                                        dialog.dismiss();
-                                    }
-                                }
-                        ).show();
-
+                        .show();
+                closeMarkerDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        markerDialog.dismiss();
+                    }
+                });
                 return false;
             }
 
@@ -288,15 +310,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind) {
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type) {
         {
-            MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())).title(kind);
+            Double lat = mLastLocation.getLatitude();
+            Double lng = mLastLocation.getLongitude();
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(new LatLng(lat, lng));
 
+            CustomMarker cm = new CustomMarker();
+            //info.setPictureUrl(img);
+            cm.setDescription(description);
+            cm.setType(type);
+            cm.setPublic(bln);
+            cm.setTitle(kind);
+            cm.setLat(lng);
+            cm.setLng(lat); //is swapped for Firebase purpose. Minor bug
 
-            markerHashMap.put(mGoogleMap.addMarker(markerOption), markerHashMap.size());
-
-            CustomMarker cm = new CustomMarker(markerHashMap.size(), markerOption.getPosition().latitude, markerOption.getPosition().longitude, bln, "pictureUrl", description, kind);
+            Marker m = mGoogleMap.addMarker(markerOptions);
+            m.setTag(cm);
 
             db.writeNewMarker(cm);
 
@@ -346,31 +377,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 }
             });
-            new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
+            Button addNewMarker = addMarkerLayout.findViewById(R.id.addMarkerBtn);
+            Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
+
+            final AlertDialog addMarkerDialog = new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
                     .setCancelable(false)
                     .setView(addMarkerLayout)
-                    .setPositiveButton("Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    boolean bool;
-                                    // add marker with LatLng geo
-                                    if (mCheckBox.isChecked())
-                                        bool = true;
-                                    else
-                                        bool = false;
-                                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString());
-                                }
-                            }
-                    )
-                    .setNegativeButton("No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //do nothing
-                                    dialog.dismiss();
-                                }
-                            }
-                    ).show();
-
+                    .show();
+            addNewMarker.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean bool;
+                    // add marker with LatLng geo
+                    if (mCheckBox.isChecked())
+                        bool = true;
+                    else
+                        bool = false;
+                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
+                    addMarkerDialog.dismiss();
+                }
+            });
+            closeAddMarker.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMarkerDialog.dismiss();
+                }
+            });
             mAddPictureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -384,20 +416,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void settingsOnClick () {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
-            new AlertDialog.Builder(getContext()).setTitle("Confirm")
-                    .setMessage("Do you want to add Marker?")
+            Button saveSettings = settingsLayout.findViewById(R.id.saveSettingsBtn);
+            Button closeSettings = settingsLayout.findViewById(R.id.closeSettingsBtn);
+            final AlertDialog settingsDialog = new AlertDialog.Builder(getContext()).setTitle("Indstillinger")
                     .setCancelable(false)
                     .setView(settingsLayout)
-                    .setNegativeButton("Close",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    //do nothing
-                                    dialog.dismiss();
-                                }
-                            }
-                    ).show();
+                    .show();
 
-
+            saveSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    settingsDialog.dismiss(); //TO BE FIXED
+                }
+            });
+            closeSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    settingsDialog.dismiss();
+                }
+            });
         }
 
         public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -413,8 +450,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Location Permission Needed")
-                            .setMessage("This app needs the Location permission, please accept to use location functionality")
+                            .setTitle("Lokationer")
+                            .setMessage("Denne applikation skal have adgang til enhedens lokation for at fungere. Tillad venligst dette")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -437,36 +474,78 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        @Override
-        public void onRequestPermissionsResult ( int requestCode,
-        String permissions[], int[] grantResults){
-            switch (requestCode) {
-                case MY_PERMISSIONS_REQUEST_LOCATION: {
-                    // If request is cancelled, the result arrays are empty.
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                        // permission was granted, yay! Do the
-                        // location-related task you need to do.
-                        if (ContextCompat.checkSelfPermission(getActivity(),
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
+        private final int MY_PERMISSIONS_REQUEST_USE_CAMERA = 0x00AF;
+        private void checkCameraPermission() {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.CAMERA)) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Kamera")
+                            .setMessage("Denne applikation skal have adgang til enhedens kamera for at fungere. Tillad venligst dette")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    //Prompt the user once explanation has been shown
+                                    ActivityCompat.requestPermissions(getActivity(),
+                                            new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_USE_CAMERA);
+                                }
+                            })
+                            .create()
+                            .show();
 
-                            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                            mGoogleMap.setMyLocationEnabled(true);
-                        }
-
-                    } else {
-
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
-                        Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
-                    }
-                    return;
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(),
+                            new String[]{Manifest.permission.CAMERA},
+                            MY_PERMISSIONS_REQUEST_LOCATION);
                 }
+            }
+        }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                // other 'case' lines to check for other
-                // permissions this app might request
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+                        mGoogleMap.setMyLocationEnabled(true);
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_USE_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_GRANTED) {
+                    }
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(getActivity(), "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
         }
     }
+}

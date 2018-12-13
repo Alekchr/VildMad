@@ -19,15 +19,20 @@
     android:layout_gravity="bottom|center_horizontal"
     android:layout_marginBottom="65dp"
     android:textColor="#FFFFFF"
-    android:background="#90b06d"
-    android:text="Add Marker" />
+    android:background="@drawable/dobuttons"
+    android:text="Tilføj et punkt" />
 
     <Button
     android:id="@+id/settingsButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="38dp"
+    android:layout_height="38dp"
     android:layout_gravity="right"
-    android:layout_marginTop="50dp"
-    android:text="Settings" />
+    android:background="#AFFFFFFF"
+    android:drawableLeft="@android:drawable/ic_dialog_map"
+    android:drawableTint="#444444"
+    android:drawablePadding="5dp"
+    android:layout_marginTop="60dp"
+    android:layout_marginRight="12dp"
+    />
 
 </FrameLayout>
