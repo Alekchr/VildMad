@@ -37,9 +37,7 @@ public class PlantListAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position){
-        Log.d("", "Inside getitemviewtype");
         if(plants.get(position) instanceof PlantItem){
-            Log.d("", "returned plant");
             return PLANT_ITEM;
 
         }

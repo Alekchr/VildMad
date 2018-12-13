@@ -14,6 +14,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import systems.mobile.vildmad.DatabaseHandler;
 import systems.mobile.vildmad.MainActivity;
 import systems.mobile.vildmad.MapFragment;
 import systems.mobile.vildmad.R;
@@ -26,6 +27,7 @@ public class FindFragment extends Fragment{
     BaseAdapter adapter;
     ArrayList<Object> plants = new ArrayList<>();
     private ListView mListView;
+    private DatabaseHandler db;
 
     public FindFragment() {
         // Required empty public constructor
@@ -50,6 +52,7 @@ public class FindFragment extends Fragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        db = new DatabaseHandler();
         String[] planttypes = getResources().getStringArray(R.array.planttypes);
         for (String type:planttypes
              ) { plants.add(type);
@@ -105,7 +108,8 @@ public class FindFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> AV, View v, int pos,
                                     long id) {
-                Log.d("", ((PlantItem)plants.get(pos)).getplantName());
+                //Log.d("", ((PlantItem)plants.get(pos)).getplantName());
+                db.returnMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
                 ((MainActivity)getActivity()).replaceFragment(MapFragment.newInstance("hi", "hi"));
 
 
