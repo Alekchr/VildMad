@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
 
 }
     public void replaceFragment(Fragment fragment){
