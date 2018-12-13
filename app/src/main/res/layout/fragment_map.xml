@@ -22,6 +22,7 @@
     android:background="@drawable/dobuttons"
     android:text="Tilføj et punkt" />
 
+
     <Button
     android:id="@+id/settingsButton"
     android:layout_width="38dp"

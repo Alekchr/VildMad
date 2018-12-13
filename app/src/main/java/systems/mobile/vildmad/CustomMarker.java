@@ -1,13 +1,15 @@
 package systems.mobile.vildmad;
 
+import android.net.Uri;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class CustomMarker {
 
     private MarkerOptions marker;
     private boolean isPublic;
-    private int id;
-    private String pictureUrl;
+    private String id;
+    private Uri pictureUrl;
     private String description;
     private String title;
     private String type;
@@ -15,31 +17,9 @@ public class CustomMarker {
 
 
 
-    public CustomMarker(int id, double lng, double lat, boolean isPublic, String pictureUrl, String description, String title, String type) {
-        this.id = id;
-        this.lng = lng;
-        this.lat = lat;
-        this.isPublic = isPublic;
-        this.pictureUrl = pictureUrl;
-        this.description = description;
-        this.title = title;
-        this.type = type;
-    }
 
     public CustomMarker() {
 
-    }
-
-
-
-    public CustomMarker(double lng, double lat, boolean isPublic, String pictureUrl, String description, String title, String type) {
-        this.lng = lng;
-        this.lat = lat;
-        this.isPublic = isPublic;
-        this.pictureUrl = pictureUrl;
-        this.description = description;
-        this.title = title;
-        this.type = type;
     }
 
     public String getDescription() {
@@ -101,19 +81,19 @@ public class CustomMarker {
         isPublic = aPublic;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getPictureUrl() {
+    public Uri getPictureUrl() {
         return pictureUrl;
     }
 
-    public void setPictureUrl(String pictureUrl) {
+    public void setPictureUrl(Uri pictureUrl) {
         this.pictureUrl = pictureUrl;
     }
 

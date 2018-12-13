@@ -40,6 +40,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Tilføj billede" />
+
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
     <EditText
         android:id="@+id/mEditTextNote"
         android:layout_width="fill_parent"
@@ -71,5 +76,6 @@
         android:layout_weight=".50"
         android:text="Tilbage"/>
     </LinearLayout>
+
 
 </LinearLayout>
