@@ -1,26 +1,20 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.content.Context;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,13 +23,13 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +41,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -58,7 +51,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,6 +61,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Button mSettingsButton;
     private Spinner mTypeSpinner;
     private Spinner mKindSpinner;
+    private ImageView imageView;
+    private Uri imagePath;
     CheckBox mCheckBox;
     GoogleMap mGoogleMap;
     MapView mMapView;
@@ -81,6 +76,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
     CheckBox mPublicCheckBox;
+    Bitmap bitmap;
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
@@ -187,7 +183,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markerOptions.position(new LatLng(longti, lati));
 
                 CustomMarker info = new CustomMarker();
-                //info.setPictureUrl(img);
+                //info.setPictureUrl(imagePath);
                 info.setDescription(descr);
                 info.setTitle(title);
 
@@ -310,7 +306,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type) {
+    public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type, Uri imagePath) {
         {
             Double lat = mLastLocation.getLatitude();
             Double lng = mLastLocation.getLongitude();
@@ -318,7 +314,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerOptions.position(new LatLng(lat, lng));
 
             CustomMarker cm = new CustomMarker();
-            //info.setPictureUrl(img);
+            cm.setPictureUrl(imagePath);
             cm.setDescription(description);
             cm.setType(type);
             cm.setPublic(bln);
@@ -336,8 +332,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         public void addMarkerOnClick () {
 
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
+
+            final LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View addMarkerLayout = inflater.inflate(R.layout.add_marker_layout, null);
             mCheckBox = (CheckBox) addMarkerLayout.findViewById(R.id.mPublicCheckBox);
             mEditTextNote = (EditText) addMarkerLayout.findViewById(R.id.mEditTextNote);
             mTypeSpinner = (Spinner) addMarkerLayout.findViewById(R.id.spinner_type);
@@ -378,7 +375,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
             Button addNewMarker = addMarkerLayout.findViewById(R.id.addMarkerBtn);
-            Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
+            final Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
 
             final AlertDialog addMarkerDialog = new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
                     .setCancelable(false)
@@ -387,13 +384,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             addNewMarker.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (imagePath != null) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imagePath);
+                            imageView = (ImageView) addMarkerLayout.findViewById(R.id.imgView);
+                            imageView.setImageBitmap(bitmap);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     boolean bool;
                     // add marker with LatLng geo
                     if (mCheckBox.isChecked())
                         bool = true;
                     else
                         bool = false;
-                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString());
+                    addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString(), imagePath);
                     addMarkerDialog.dismiss();
                 }
             });
@@ -408,7 +416,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onClick(View v) {
                     AddPicture ap = AddPicture.newInstance(getActivity());
                     ap.takePicture();
-                    ap.addPhotoToGallery();
+                    imagePath = ap.addPhotoToGallery();
                 }
             });
         }
