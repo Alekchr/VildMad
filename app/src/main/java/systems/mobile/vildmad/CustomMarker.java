@@ -8,12 +8,15 @@ public class CustomMarker {
 
     private MarkerOptions marker;
     private boolean isPublic;
-    private int id;
+    private String id;
     private Uri pictureUrl;
     private String description;
     private String title;
     private String type;
     private double lng;
+
+
+
 
     public CustomMarker() {
 
@@ -78,11 +81,11 @@ public class CustomMarker {
         isPublic = aPublic;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

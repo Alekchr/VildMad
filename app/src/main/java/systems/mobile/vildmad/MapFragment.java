@@ -1,20 +1,28 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
 import android.content.Context;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +31,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +50,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,6 +59,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.io.IOException;
@@ -80,6 +91,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private long lastTouchTime = -1;
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
+    private FirebaseAuth auth;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -153,6 +165,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
         db = new DatabaseHandler();
+        auth = FirebaseAuth.getInstance();
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -183,7 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markerOptions.position(new LatLng(longti, lati));
 
                 CustomMarker info = new CustomMarker();
-                //info.setPictureUrl(imagePath);
+                //info.setPictureUrl(img);
                 info.setDescription(descr);
                 info.setTitle(title);
 
@@ -375,7 +388,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
             Button addNewMarker = addMarkerLayout.findViewById(R.id.addMarkerBtn);
-            final Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
+            Button closeAddMarker = addMarkerLayout.findViewById(R.id.closeAddMarkerBtn);
 
             final AlertDialog addMarkerDialog = new AlertDialog.Builder(getContext()).setTitle("Tilføj et punkt")
                     .setCancelable(false)
