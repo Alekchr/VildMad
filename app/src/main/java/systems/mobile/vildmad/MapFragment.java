@@ -126,17 +126,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int level = intent.getIntExtra("level", 0);
             int scale = intent.getIntExtra("scale", 100);
             int batpercentage = level * 100 / scale;
-            if (batpercentage >= 50) {
+            if (batpercentage > 50) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);
             } else if (batpercentage < 50 && batpercentage > 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                mLocationRequest.setInterval(100000);
-                mLocationRequest.setFastestInterval(10000);
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(5000);
             } else if (batpercentage <= 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
-                mLocationRequest.setInterval(3600000);
-                mLocationRequest.setFastestInterval(60000);
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(5000);
             }
         }
     };
@@ -187,6 +187,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
             String descr = ((CustomMarker) marker).getDescription();
+            String type = ((CustomMarker) marker).getType();
             //String img = ((CustomMarker) marker).getPictureUrl();
             String title = ((CustomMarker) marker).getTitle();
 
@@ -199,6 +200,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //info.setPictureUrl(img);
                 info.setDescription(descr);
                 info.setTitle(title);
+                info.setType(type);
 
                 Marker m = mGoogleMap.addMarker(markerOptions);
                 m.setTag(info);
