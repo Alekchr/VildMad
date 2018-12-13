@@ -123,13 +123,16 @@ public class AddPicture{
         return image;
     }
 
-    protected void addPhotoToGallery() {
+    public Uri addPhotoToGallery() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mCurrentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
         activity.sendBroadcast(mediaScanIntent);
+        return contentUri;
     }
+
+
 
     /**
      * Scale the photo down and fit it to our image views.
