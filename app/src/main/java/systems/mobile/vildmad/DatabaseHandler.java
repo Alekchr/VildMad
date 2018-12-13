@@ -83,14 +83,16 @@ public class DatabaseHandler {
     }
 
     public List<CustomMarker> returnMarkerByPlant(final String plantName) {
-        list.clear();
         myRef.orderByChild("title").equalTo(plantName).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
                             try {
                                 CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
-                                list.add(marker);
+                                if(!list.contains(marker)){
+                                    list.add(marker);
+                                }
+
                                 Log.d("Custom markers", list.toString());
                             }
                             catch (Exception e) {
