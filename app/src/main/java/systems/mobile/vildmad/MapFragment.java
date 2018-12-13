@@ -309,18 +309,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type) {
         {
+            Double lat = mLastLocation.getLatitude();
+            Double lng = mLastLocation.getLongitude();
             MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+            markerOptions.position(new LatLng(lat, lng));
 
             CustomMarker cm = new CustomMarker();
             //info.setPictureUrl(img);
             cm.setDescription(description);
             cm.setType(type);
+            cm.setPublic(bln);
             cm.setTitle(kind);
+            cm.setLat(lat);
+            cm.setLng(lng);
 
             Marker m = mGoogleMap.addMarker(markerOptions);
             m.setTag(cm);
-
 
             db.writeNewMarker(cm);
 
