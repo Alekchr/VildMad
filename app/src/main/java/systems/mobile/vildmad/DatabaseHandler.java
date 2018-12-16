@@ -48,15 +48,17 @@ public class DatabaseHandler {
     public void writeNewMarker(CustomMarker cm) {
 
         //UPLOAD THE IMAGE TO STORAGE
-        Uri file = Uri.parse(cm.getPictureUrl());
-        if (file != null) {
-            StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
-            uploadTask = locationPath.putFile(file);
-        }
+        if (cm.getPictureUrl() != null) {
+            Uri file = Uri.parse(cm.getPictureUrl());
+            if (file != null) {
+                StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
+                uploadTask = locationPath.putFile(file);
+            }
 
-        System.out.println(cm.getPictureUrl());
-        myRef.push().setValue(cm);
-    }
+            System.out.println(cm.getPictureUrl());
+        }
+            myRef.push().setValue(cm);
+        }
 
 
     public void readAllMarkers(){
@@ -83,10 +85,11 @@ public class DatabaseHandler {
     public boolean checkIfPublicAndUser(CustomMarker cm){
         if(cm.isPublic() == true)
             return true;
-
-        if(cm.getId() == auth.getUid())
+        Log.d("uid",auth.getUid());
+        if(cm.getId().equals(auth.getUid()))
                 return true;
             else
+
                 return false;
         }
 
