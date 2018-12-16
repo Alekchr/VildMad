@@ -198,7 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Double longti = ((CustomMarker) marker).getLng();
             String descr = ((CustomMarker) marker).getDescription();
             String type = ((CustomMarker) marker).getType();
-            //String img = ((CustomMarker) marker).getPictureUrl();
+            String img = ((CustomMarker) marker).getPictureUrl();
             String title = ((CustomMarker) marker).getTitle();
 
 
@@ -207,7 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 markerOptions.position(new LatLng(longti, lati));
 
                 CustomMarker info = new CustomMarker();
-                //info.setPictureUrl(img);
+                info.setPictureUrl(img);
                 info.setDescription(descr);
                 info.setTitle(title);
                 info.setType(type);
