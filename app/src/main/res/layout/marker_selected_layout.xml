@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp">
+
+    <ImageView
+        android:id="@+id/mImgview"
+        android:layout_width="100dp"
+        android:layout_height="100dp" />
     <TextView
         android:id="@+id/mTypeText"
         android:layout_width="match_parent"

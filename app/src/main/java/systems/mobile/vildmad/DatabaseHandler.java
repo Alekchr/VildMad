@@ -4,6 +4,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,18 +44,50 @@ public class DatabaseHandler {
         return databaseHandler;
     }
 
+public void processImageUrl(final CustomMarker cm) {
+    Uri file = Uri.parse(cm.getPictureUrl());
+    final StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
+    uploadTask = locationPath.putFile(file);
+    Task<Uri> downloadUri = locationPath.getDownloadUrl();
+    cm.setPictureUrl(String.valueOf(downloadUri));
 
-    public void writeNewMarker(CustomMarker cm) {
+    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+        @Override
+        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            // Continue with the task to get the download URL
+            return locationPath.getDownloadUrl();
+        }
+    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+        @Override
+        public void onComplete(@NonNull Task<Uri> task) {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                cm.setPictureUrl(String.valueOf(downloadUri));
+                myRef.push().setValue(cm);
+
+            } else {
+                // Handle failures
+                // ...
+            }
+        }
+    });
+}
+    public void writeNewMarker(final CustomMarker cm) {
 
         //UPLOAD THE IMAGE TO STORAGE
         Uri file = Uri.parse(cm.getPictureUrl());
         if (file != null) {
-            StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
-            uploadTask = locationPath.putFile(file);
-        }
+            processImageUrl(cm);
 
-        System.out.println(cm.getPictureUrl());
-        myRef.push().setValue(cm);
+        }
+        else {
+            myRef.push().setValue(cm);
+        }
     }
 
 

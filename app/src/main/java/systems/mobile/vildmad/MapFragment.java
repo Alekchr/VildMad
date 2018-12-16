@@ -16,6 +16,7 @@ import android.location.Location;
 import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -289,11 +290,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 TextView type = markerSelectedLayout.findViewById(R.id.mTypeText);
                 TextView kind = markerSelectedLayout.findViewById(R.id.mKindText);
                 TextView descr = markerSelectedLayout.findViewById(R.id.mNoteTextView);
+                ImageView imgView = markerSelectedLayout.findViewById(R.id.mImgview);
 
                 CustomMarker cm = (CustomMarker) marker.getTag();
                 type.setText(cm.getTitle());
                 kind.setText(cm.getType()); // CHANGE THIS TO WHAT KIND IT IS LATER
                 descr.setText(cm.getDescription());
+
+                Glide.with(getActivity()).load(cm.getPictureUrl()).into(imgView);
 
                 final AlertDialog markerDialog = new AlertDialog.Builder(getContext()).setTitle("Marker")
                         .setCancelable(false)
