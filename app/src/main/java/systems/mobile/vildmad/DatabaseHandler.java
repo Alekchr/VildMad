@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +33,7 @@ public class DatabaseHandler {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     UploadTask uploadTask;
+    FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private DatabaseHandler(){
 
@@ -76,15 +78,21 @@ public class DatabaseHandler {
             });
         }
     public void writeNewMarker(final CustomMarker cm) {
-        Uri file = Uri.parse(cm.getPictureUrl());
-        if (file != null) {
-            processImageUrl(cm);
+
+
+        if (cm.getPictureUrl() != null) {
+            Uri file = Uri.parse(cm.getPictureUrl());
+            if (file != null) {
+                StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
+                uploadTask = locationPath.putFile(file);
+            }
+
+            System.out.println(cm.getPictureUrl());
         }
-        else {
         myRef.push().setValue(cm);
     }
 
-        }
+        
     public void readAllMarkers(){
 
         list.clear();
@@ -108,6 +116,17 @@ public class DatabaseHandler {
 
     }
 
+    public boolean checkIfPublicAndUser(CustomMarker cm){
+        if(cm.isPublic() == true)
+            return true;
+        Log.d("uid",auth.getUid());
+        if(cm.getId().equals(auth.getUid()))
+            return true;
+        else
+
+            return false;
+    }
+
     public List returnMarkerList() {
         return list;
     }
@@ -119,7 +138,7 @@ public class DatabaseHandler {
                         for(DataSnapshot customMarkerSnapshot : dataSnapshot.getChildren()){
                             try {
                                 CustomMarker marker = customMarkerSnapshot.getValue(CustomMarker.class);
-                                if(!list.contains(marker)){
+                                if(!list.contains(marker) && checkIfPublicAndUser(marker) == true){
                                     list.add(marker);
                                 }
 
