@@ -352,7 +352,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             cm.setPublic(bln);
             cm.setTitle(kind);
             cm.setLat(lng);
-            cm.setLng(lat); //is swapped for Firebase purpose. Minor bug
+            cm.setLng(lat);
+            cm.setId(auth.getUid());//is swapped for Firebase purpose. Minor bug
 
             Marker m = mGoogleMap.addMarker(markerOptions);
             m.setTag(cm);
