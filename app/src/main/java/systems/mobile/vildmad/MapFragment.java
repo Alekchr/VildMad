@@ -340,7 +340,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerOptions.position(new LatLng(lat, lng));
 
             CustomMarker cm = new CustomMarker();
-            cm.setPictureUrl(imagePath.toString());
+            if (imagePath != null) {
+                cm.setPictureUrl(imagePath.toString());
+            }
             cm.setDescription(description);
             cm.setType(type);
             cm.setPublic(bln);
