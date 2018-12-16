@@ -45,13 +45,13 @@ public class DatabaseHandler {
     public void writeNewMarker(CustomMarker cm) {
 
         //UPLOAD THE IMAGE TO STORAGE
-        Uri file = cm.getPictureUrl();
+        Uri file = Uri.parse(cm.getPictureUrl());
         if (file != null) {
             StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
             uploadTask = locationPath.putFile(file);
         }
 
-
+        System.out.println(cm.getPictureUrl());
         myRef.push().setValue(cm);
     }
 

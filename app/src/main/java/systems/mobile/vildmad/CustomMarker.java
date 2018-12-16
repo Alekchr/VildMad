@@ -9,7 +9,7 @@ public class CustomMarker {
     private MarkerOptions marker;
     private boolean isPublic;
     private String id;
-    private Uri pictureUrl;
+    private String pictureUrl;
     private String description;
     private String title;
     private String type;
@@ -89,11 +89,11 @@ public class CustomMarker {
         this.id = id;
     }
 
-    public Uri getPictureUrl() {
+    public String getPictureUrl() {
         return pictureUrl;
     }
 
-    public void setPictureUrl(Uri pictureUrl) {
+    public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
     }
 

@@ -340,7 +340,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerOptions.position(new LatLng(lat, lng));
 
             CustomMarker cm = new CustomMarker();
-            cm.setPictureUrl(imagePath);
+            cm.setPictureUrl(imagePath.toString());
             cm.setDescription(description);
             cm.setType(type);
             cm.setPublic(bln);
@@ -412,7 +412,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 public void onClick(View view) {
                     if (imagePath != null) {
                         try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imagePath);
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.parse(String.valueOf(imagePath)));
                             imageView = (ImageView) addMarkerLayout.findViewById(R.id.imgView);
                             imageView.setImageBitmap(bitmap);
 
