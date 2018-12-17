@@ -63,6 +63,11 @@ public class PlantListAdapter extends BaseAdapter {
         return position;
     }
 
+    @Override
+    public boolean isEnabled(int position){
+        return (plants.get(position) instanceof PlantItem);
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -78,7 +83,7 @@ public class PlantListAdapter extends BaseAdapter {
 
                 break;
             case HEADER:
-                convertView = inflater.inflate(R.layout.layout_plant_section, parent, false);
+                convertView = inflater.inflate(R.layout.layout_plant_section, null, false);
                 TextView twSectionName = convertView.findViewById(R.id.sectionName);
                 twSectionName.setText(plants.get(position).toString());
                 break;
