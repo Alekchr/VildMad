@@ -20,11 +20,9 @@ import systems.mobile.vildmad.R;
 
 public class FindFragment extends Fragment{
 
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static FindFragment fragment;
     BaseAdapter adapter;
-    ArrayList<Object> plants = new ArrayList<>();
+    ArrayList<Object> plants;
     private ListView mListView;
     private DatabaseHandler db;
 
@@ -36,21 +34,21 @@ public class FindFragment extends Fragment{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment FindFragment.
      */
-    public static FindFragment newInstance(String param1, String param2) {
-        FindFragment fragment = new FindFragment();
+    public static FindFragment getInstance() {
+        if(fragment == null)
+            fragment = new FindFragment();
+
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("New instance", "A new instance was created");
+        plants = new ArrayList<>();
         db = DatabaseHandler.getInstance();
         String[] planttypes = getResources().getStringArray(R.array.planttypes);
         for (String type:planttypes
@@ -90,8 +88,6 @@ public class FindFragment extends Fragment{
             }
         }
 
-
-
         super.onCreate(savedInstanceState);
 
     }
@@ -123,6 +119,7 @@ public class FindFragment extends Fragment{
                 {
                     itemCheckbox.setChecked(false);
                     item.setChecked(false);
+                    db.removeMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
                 }else
                 {
                     itemCheckbox.setChecked(true);

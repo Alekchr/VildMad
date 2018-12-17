@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,7 +72,10 @@ public class PlantListAdapter extends BaseAdapter {
             case PLANT_ITEM:
                 convertView = inflater.inflate(R.layout.layout_plant_view, parent, false);
                 TextView twPlantName = convertView.findViewById(R.id.plantName);
+                CheckBox checkbox = convertView.findViewById(R.id.itemCheckbox);
                 twPlantName.setText(((PlantItem)plants.get(position)).getplantName());
+                checkbox.setChecked(((PlantItem)plants.get(position)).isChecked());
+
                 break;
             case HEADER:
                 convertView = inflater.inflate(R.layout.layout_plant_section, parent, false);

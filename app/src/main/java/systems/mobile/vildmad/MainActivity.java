@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                     fragment = HomeFragment.newInstance("hi", "hi");
                     return true;
                 case R.id.navigation_find:
-                    fragment = FindFragment.newInstance("", "");
+                    fragment = FindFragment.getInstance();
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:
