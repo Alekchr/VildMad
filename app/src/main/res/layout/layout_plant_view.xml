@@ -6,13 +6,21 @@
     android:layout_height="match_parent"
     android:weightSum="100">
 
+    <CheckBox
+        android:id="@+id/itemCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"/>
+
+
     <TextView
         android:gravity="center"
         android:textAlignment="textStart"
         android:text="Plant name"
         android:paddingLeft="10dp"
         android:id="@+id/plantName"
-        android:layout_weight="15"
+        android:layout_weight="20"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         tools:ignore="RtlCompat" />
@@ -23,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="vertical"
-        android:layout_weight="85"
+        android:layout_weight="80"
         android:src="@drawable/placeholder"/>
 
 

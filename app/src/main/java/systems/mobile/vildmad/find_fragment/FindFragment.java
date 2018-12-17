@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -99,6 +100,7 @@ public class FindFragment extends Fragment{
         View view;
         view = inflater.inflate(R.layout.fragment_find, container, false);
         mListView = view.findViewById(R.id.plantListView);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         adapter = new PlantListAdapter(getActivity(), plants);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -106,9 +108,27 @@ public class FindFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> AV, View v, int pos,
                                     long id) {
-                //Log.d("", ((PlantItem)plants.get(pos)).getplantName());
-                db.returnMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
 
+                // Get user selected item.
+                Object itemObject = AV.getAdapter().getItem(pos);
+
+                // Translate the selected item to DTO object.
+                PlantItem item = (PlantItem) itemObject;
+
+                // Get the checkbox.
+                CheckBox itemCheckbox = (CheckBox) v.findViewById(R.id.itemCheckbox);
+
+                // Reverse the checkbox and clicked item check state.
+                if(item.isChecked())
+                {
+                    itemCheckbox.setChecked(false);
+                    item.setChecked(false);
+                }else
+                {
+                    itemCheckbox.setChecked(true);
+                    item.setChecked(true);
+                    db.returnMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
+                }
 
             }
 
