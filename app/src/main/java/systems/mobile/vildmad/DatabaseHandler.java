@@ -21,14 +21,16 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DatabaseHandler {
 
     private static DatabaseHandler databaseHandler;
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference("Marker");
-    List<CustomMarker> list = new ArrayList();
+    CopyOnWriteArrayList<CustomMarker> list = new CopyOnWriteArrayList();
     List<CustomMarker> selectedList = new ArrayList();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -131,7 +133,7 @@ public class DatabaseHandler {
         return list;
     }
 
-    public List<CustomMarker> returnMarkerByPlant(final String plantName) {
+    public void returnMarkerByPlant(final String plantName) {
         myRef.orderByChild("title").equalTo(plantName).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -155,16 +157,14 @@ public class DatabaseHandler {
                     }
                 });
 
-        return list;
     }
 
-    public void removeMarkerByPlant(final String plantName){
-        for (CustomMarker marker:list
-             ) {
+    public void removeMarkerByPlant(String plantName){
+        for (Iterator<CustomMarker> itr = list.iterator(); ((Iterator) itr).hasNext();){
+            CustomMarker marker = itr.next();
             if(marker.getTitle().equals(plantName)){
                 list.remove(marker);
             }
-
 
         }
 
