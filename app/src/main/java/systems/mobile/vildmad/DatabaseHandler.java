@@ -123,6 +123,19 @@ public class DatabaseHandler {
         return list;
     }
 
+    public void removeMarkerByPlant(final String plantName){
+        for (CustomMarker marker:list
+             ) {
+            if(marker.getTitle().equals(plantName)){
+                list.remove(marker);
+            }
+
+
+        }
+
+    }
+
+
 /*            @Override
             public void onDataChange(DataSnapshot titleSnapshot) {
                 String markerTitle = titleSnapshot.getValue(String.class);
