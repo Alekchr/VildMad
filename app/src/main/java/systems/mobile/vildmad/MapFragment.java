@@ -241,15 +241,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                 mGoogleMap.setMyLocationEnabled(true);
             } else {
-                //Request Location Permission
                 checkLocationPermission();
-                checkCameraPermission();
             }
         } else {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mGoogleMap.setMyLocationEnabled(true);
         }
-
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            return;
+        } else {
+            checkCameraPermission();
+        }
 
 
         //For adding a new marker on the current position
