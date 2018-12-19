@@ -41,7 +41,7 @@ public class AddPicture{
      *
      * @return A new instance of activity AddPicture.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static AddPicture newInstance(Activity activity) {
         AddPicture addPicture = new AddPicture(activity);
         return addPicture;

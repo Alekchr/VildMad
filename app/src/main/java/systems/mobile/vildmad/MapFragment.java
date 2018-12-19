@@ -95,7 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private DatabaseHandler db;
     private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
     private FirebaseAuth auth;
-
+    private LocationCallback mLocationCallback;
 
 
     private static final String ARG_PARAM1 = "param1";
@@ -130,19 +130,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int level = intent.getIntExtra("level", 0);
             int scale = intent.getIntExtra("scale", 100);
             int batpercentage = level * 100 / scale;
-            if (batpercentage >= 50) {
+
+            if (batpercentage > 70) {
+                Log.d("First", "" + batpercentage);
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);
                 mLocationRequest.setFastestInterval(1000);
-            } else if (batpercentage < 50 && batpercentage > 15) {
+            } else if (batpercentage < 70 && batpercentage > 15) {
+
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                mLocationRequest.setInterval(20000);
-                mLocationRequest.setFastestInterval(5000);
-            } else if (batpercentage <= 15) {
-                mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
                 mLocationRequest.setInterval(60000);
                 mLocationRequest.setFastestInterval(10000);
+                Log.d("Second", "" + batpercentage);
+            } else if (batpercentage <= 15) {
+
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
+                mLocationRequest.setInterval(300000);
+                mLocationRequest.setFastestInterval(60000);
+                Log.d("Third", "" + batpercentage + "" + mLocationRequest.getInterval());
             }
+            updateLocationClient();
         }
     };
 
@@ -151,7 +158,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         db = DatabaseHandler.getInstance();
         auth = FirebaseAuth.getInstance();
-        Log.d("Run", "Oncreate");
+
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                List<Location> locationList = locationResult.getLocations();
+                if (locationList.size() > 0) {
+                    //The last location in the list is the newest
+                    Location location = locationList.get(locationList.size() - 1);
+                    mLastLocation = location;
+                    //move map camera
+
+
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+
+
+
+                }
+            }
+        };
 
     }
 
@@ -161,6 +189,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
         mapFrag = (SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
+
         mView = inflater.inflate(R.layout.fragment_map, container, false);
 
         return mView;
@@ -172,7 +201,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView = (MapView) mView.findViewById(R.id.map);
         mAddMarkerButton = (Button) mView.findViewById(R.id.addMarkerButton);
         mSettingsButton = (Button) mView.findViewById(R.id.settingsButton);
-
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -216,7 +245,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 m.setTag(info);
             }
             catch (Exception e){
-                Log.d("Fail", "Failed to add markers.");
+
             }
         }
     }
@@ -229,28 +258,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
-        mLocationRequest = new LocationRequest();
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(1000);
 
-        getActivity().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        //getActivity().registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                mGoogleMap.setMyLocationEnabled(true);
-            } else {
-                //Request Location Permission
-                checkLocationPermission();
-                checkCameraPermission();
-            }
-        } else {
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-            mGoogleMap.setMyLocationEnabled(true);
-        }
-
-
+        updateLocationClient();
 
         //For adding a new marker on the current position
         mAddMarkerButton.setOnClickListener(new View.OnClickListener() {
@@ -316,25 +331,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         addAllMarkersFromDatabase();
 
+
+
+
     }
 
-    LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            List<Location> locationList = locationResult.getLocations();
-            if (locationList.size() > 0) {
-                //The last location in the list is the newest
-                Location location = locationList.get(locationList.size() - 1);
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                mLastLocation = location;
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    public void updateLocationClient(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //Location Permission already granted
 
-                //move map camera
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-
+                mGoogleMap.setMyLocationEnabled(true);
+            } else {
+                //Request Location Permission
+                checkLocationPermission();
+                checkCameraPermission();
             }
+        } else {
+
+            mGoogleMap.setMyLocationEnabled(true);
         }
-    };
+
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+    }
 
     public void addMarkerOnCurrentPosition(boolean bln, String description, String kind, String type, Uri imagePath) {
         {
@@ -556,7 +578,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                         mGoogleMap.setMyLocationEnabled(true);
                     }
 
