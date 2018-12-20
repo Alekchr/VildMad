@@ -1,6 +1,6 @@
 package systems.mobile.vildmad;
 
-import android.content.Intent;
+
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -17,7 +17,7 @@ import systems.mobile.vildmad.find_fragment.FindFragment;
 import systems.mobile.vildmad.login.LoginActivity;
 import systems.mobile.vildmad.login.SignupActivity;
 
-public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
 
     Fragment fragment = null;
 
@@ -63,8 +63,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
-}
-    public void replaceFragment(Fragment fragment){
+    }
+
+    public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.container_fragment, fragment);
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         transaction.commit();
     }
 
-    public void returnToFragment(){
+    public void returnToFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.popBackStack();
     }

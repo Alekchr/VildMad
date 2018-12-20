@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +20,6 @@ import systems.mobile.vildmad.MainActivity;
 import systems.mobile.vildmad.R;
 
 public class LoginActivity extends AppCompatActivity {
-
 
 
     private EditText inputEmail, inputPassword;
@@ -62,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             }
         });
-
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {

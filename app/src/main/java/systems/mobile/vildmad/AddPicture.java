@@ -5,16 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
-
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -22,7 +17,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class AddPicture{
+public class AddPicture {
 
     static final int REQUEST_IMAGE_CAPTURE = 11111;
 
@@ -34,19 +29,14 @@ public class AddPicture{
         this.activity = activity;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this activity using the provided parameters.
-     *
-     * @return A new instance of activity AddPicture.
-     */
 
     public static AddPicture newInstance(Activity activity) {
         AddPicture addPicture = new AddPicture(activity);
         return addPicture;
     }
 
-    protected void takePicture(){
+
+    protected void takePicture() {
         Context context = activity;
         PackageManager pm = context.getPackageManager();
 
@@ -102,46 +92,16 @@ public class AddPicture{
     }
 
 
-
-    /**
-     * Scale the photo down and fit it to our image views.
-     *
-     * Read more:http://developer.android.com/training/camera/photobasics.html
-     */
-    private void setFullImageFromFilePath(String imagePath, ImageView imageView) {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-        imageView.setImageBitmap(bitmap);
-    }
-
     private void warnNoWritePermission(Context context) {
         int result = ActivityCompat.checkSelfPermission(context, Manifest.permission
                 .WRITE_EXTERNAL_STORAGE);
-        if (result != PackageManager.PERMISSION_GRANTED){
+        if (result != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest
-                    .permission.WRITE_EXTERNAL_STORAGE)){
+                    .permission.WRITE_EXTERNAL_STORAGE)) {
                 Toast.makeText(activity.getApplicationContext(), "External Storage " +
                         "permission needed. Please allow in App Settings for additional functionality.", Toast.LENGTH_LONG).show();
             } else {
-                ActivityCompat.requestPermissions(activity,new String[]{Manifest
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest
                         .permission
                         .WRITE_EXTERNAL_STORAGE}, REQUEST_IMAGE_CAPTURE);
             }

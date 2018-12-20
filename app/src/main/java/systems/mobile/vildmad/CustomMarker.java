@@ -1,7 +1,5 @@
 package systems.mobile.vildmad;
 
-import android.net.Uri;
-
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class CustomMarker {
@@ -14,8 +12,6 @@ public class CustomMarker {
     private String title;
     private String type;
     private double lng;
-
-
 
 
     public CustomMarker() {
@@ -63,15 +59,6 @@ public class CustomMarker {
     }
 
     private double lat;
-
-
-    public MarkerOptions getMarker() {
-        return marker;
-    }
-
-    public void setMarker(MarkerOptions marker) {
-        this.marker = marker;
-    }
 
     public boolean isPublic() {
         return isPublic;

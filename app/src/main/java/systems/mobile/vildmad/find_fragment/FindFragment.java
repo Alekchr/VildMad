@@ -2,7 +2,6 @@ package systems.mobile.vildmad.find_fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,14 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 
 
 import systems.mobile.vildmad.DatabaseHandler;
 import systems.mobile.vildmad.R;
 
-public class FindFragment extends Fragment{
+public class FindFragment extends Fragment {
 
     private static FindFragment fragment;
     BaseAdapter adapter;
@@ -28,14 +28,8 @@ public class FindFragment extends Fragment{
 
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment FindFragment.
-     */
     public static FindFragment getInstance() {
-        if(fragment == null)
+        if (fragment == null)
             fragment = new FindFragment();
 
         Bundle args = new Bundle();
@@ -48,39 +42,45 @@ public class FindFragment extends Fragment{
         plants = new ArrayList<>();
         db = DatabaseHandler.getInstance();
         String[] planttypes = getResources().getStringArray(R.array.planttypes);
-        for (String type:planttypes
-             ) { plants.add(type);
+        for (String type : planttypes
+                ) {
+            plants.add(type);
 
-             switch(type){
-            case "Svampe":
-                for (String svamp:getResources().getStringArray(R.array.svampe)
-                     ) {plants.add(new PlantItem(svamp, "x"));
-                }
-                break;
+            switch (type) {
+                case "Svampe":
+                    for (String svamp : getResources().getStringArray(R.array.svampe)
+                            ) {
+                        plants.add(new PlantItem(svamp, "x"));
+                    }
+                    break;
 
-            case "Frugter":
-                for (String frugt:getResources().getStringArray(R.array.frugter)
-                        ) {plants.add(new PlantItem(frugt, ""));
-                }
-                break;
+                case "Frugter":
+                    for (String frugt : getResources().getStringArray(R.array.frugter)
+                            ) {
+                        plants.add(new PlantItem(frugt, ""));
+                    }
+                    break;
 
-            case "Krydderurter":
-                for (String krydderurter:getResources().getStringArray(R.array.krydderurter)
-                        ) {plants.add(new PlantItem(krydderurter, ""));
-                }
-                break;
+                case "Krydderurter":
+                    for (String krydderurter : getResources().getStringArray(R.array.krydderurter)
+                            ) {
+                        plants.add(new PlantItem(krydderurter, ""));
+                    }
+                    break;
 
-            case "Bær":
-                for (String bær:getResources().getStringArray(R.array.baer)
-                        ) {plants.add(new PlantItem(bær, ""));
-                }
-                break;
+                case "Bær":
+                    for (String bær : getResources().getStringArray(R.array.baer)
+                            ) {
+                        plants.add(new PlantItem(bær, ""));
+                    }
+                    break;
 
-            case "Nødder":
-                for (String nødder:getResources().getStringArray(R.array.nodder)
-                        ) {plants.add(new PlantItem(nødder, ""));
-                }
-                break;
+                case "Nødder":
+                    for (String nødder : getResources().getStringArray(R.array.nodder)
+                            ) {
+                        plants.add(new PlantItem(nødder, ""));
+                    }
+                    break;
 
             }
         }
@@ -88,6 +88,7 @@ public class FindFragment extends Fragment{
         super.onCreate(savedInstanceState);
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view;
@@ -108,16 +109,14 @@ public class FindFragment extends Fragment{
 
                 CheckBox itemCheckbox = (CheckBox) v.findViewById(R.id.itemCheckbox);
 
-                if(item.isChecked())
-                {
+                if (item.isChecked()) {
                     itemCheckbox.setChecked(false);
                     item.setChecked(false);
-                    db.removeMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
-                }else
-                {
+                    db.removeMarkerByPlant(((PlantItem) plants.get(pos)).getplantName());
+                } else {
                     itemCheckbox.setChecked(true);
                     item.setChecked(true);
-                    db.returnMarkerByPlant(((PlantItem)plants.get(pos)).getplantName());
+                    db.returnMarkerByPlant(((PlantItem) plants.get(pos)).getplantName());
                 }
 
             }
@@ -127,11 +126,13 @@ public class FindFragment extends Fragment{
 
         return view;
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
     }
+
     @Override
     public void onPause() {
         super.onPause();
