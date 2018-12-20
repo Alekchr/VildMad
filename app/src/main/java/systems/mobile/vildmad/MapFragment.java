@@ -1,29 +1,19 @@
 package systems.mobile.vildmad;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Criteria;
 import android.location.Location;
 import android.content.Context;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,7 +22,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -58,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -93,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment MapFragment.
      */
     public static MapFragment newInstance() {
@@ -131,7 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         db = DatabaseHandler.getInstance();
         auth = FirebaseAuth.getInstance();
 
-         mLocationCallback = new LocationCallback() {
+        mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 List<Location> locationList = locationResult.getLocations();
@@ -141,7 +133,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                     mLastLocation = location;
 
-                    if(isFirstTime) {
+                    if (isFirstTime) {
                         LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
@@ -190,7 +182,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
     }
 
@@ -199,7 +191,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         List<Object> markers = db.returnMarkerList();
         mGoogleMap.clear();
-        for(Object marker : markers ) {
+        for (Object marker : markers) {
             Double lati = ((CustomMarker) marker).getLat();
             Double longti = ((CustomMarker) marker).getLng();
             String descr = ((CustomMarker) marker).getDescription();
@@ -220,8 +212,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 Marker m = mGoogleMap.addMarker(markerOptions);
                 m.setTag(info);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -310,7 +301,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public void updateLocationClient(){
+    public void updateLocationClient() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)

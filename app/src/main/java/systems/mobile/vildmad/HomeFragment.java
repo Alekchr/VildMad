@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-
 public class HomeFragment extends Fragment {
 
 
@@ -22,6 +21,7 @@ public class HomeFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
