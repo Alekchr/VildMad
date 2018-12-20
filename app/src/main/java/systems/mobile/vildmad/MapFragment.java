@@ -342,6 +342,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             CustomMarker cm = new CustomMarker();
             if (imagePath != null) {
                 cm.setPictureUrl(imagePath.toString());
+                imagePath = null;
             }
             cm.setDescription(description);
             cm.setType(type);
@@ -431,6 +432,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 else
                     bool = false;
                 addMarkerOnCurrentPosition(bool, mEditTextNote.getText().toString(), mKindSpinner.getSelectedItem().toString(), mTypeSpinner.getSelectedItem().toString(), imagePath);
+                imagePath = null;
                 addMarkerDialog.dismiss();
             }
         });
