@@ -29,22 +29,22 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    fragment = HomeFragment.newInstance("hi", "hi");
+                    fragment = HomeFragment.newInstance();
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_map:
-                    fragment = MapFragment.newInstance("hi", "hi");
+                    fragment = MapFragment.newInstance();
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_landscape:
-                    fragment = HomeFragment.newInstance("hi", "hi");
+                    fragment = HomeFragment.newInstance();
                     return true;
                 case R.id.navigation_find:
                     fragment = FindFragment.getInstance();
                     replaceFragment(fragment);
                     return true;
                 case R.id.navigation_more:
-                    fragment = HomeFragment.newInstance("hi", "hi");
+                    fragment = HomeFragment.newInstance();
                     return true;
             }
             return false;

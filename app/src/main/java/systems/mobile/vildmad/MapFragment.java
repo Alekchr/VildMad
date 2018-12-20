@@ -43,8 +43,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -55,18 +53,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-
-
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -85,21 +77,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
     Location mLastLocation;
-    Marker mCurrLocationMarker;
-    BroadcastReceiver br;
     FusedLocationProviderClient mFusedLocationClient;
     EditText mEditTextNote;
     CheckBox mPublicCheckBox;
-    Bitmap bitmap;
-    private long lastTouchTime = -1;
     private DatabaseHandler db;
-    private HashMap<Marker, Integer> markerHashMap = new HashMap<Marker, Integer>();
+    LocationCallback mLocationCallback;
     private FirebaseAuth auth;
+    boolean isFirstTime = true;
 
-
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     public MapFragment() {
         // Required empty public constructor
@@ -108,17 +93,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MapFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static MapFragment newInstance(String param1, String param2) {
+    public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
 
         return fragment;
@@ -130,24 +109,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             int level = intent.getIntExtra("level", 0);
             int scale = intent.getIntExtra("scale", 100);
             int batpercentage = level * 100 / scale;
-
-            if (batpercentage > 70) {
-                Log.d("First", "" + batpercentage);
+            if (batpercentage > 50) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 mLocationRequest.setInterval(5000);
                 mLocationRequest.setFastestInterval(1000);
-            } else if (batpercentage < 70 && batpercentage > 15) {
-
+            } else if (batpercentage < 50 && batpercentage > 15) {
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 mLocationRequest.setInterval(60000);
                 mLocationRequest.setFastestInterval(10000);
-                Log.d("Second", "" + batpercentage);
             } else if (batpercentage <= 15) {
-
                 mLocationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
                 mLocationRequest.setInterval(300000);
                 mLocationRequest.setFastestInterval(60000);
-                Log.d("Third", "" + batpercentage + "" + mLocationRequest.getInterval());
             }
         }
     };
@@ -157,7 +130,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         db = DatabaseHandler.getInstance();
         auth = FirebaseAuth.getInstance();
-        Log.d("Run", "Oncreate");
+
+         mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                List<Location> locationList = locationResult.getLocations();
+                if (locationList.size() > 0) {
+                    //The last location in the list is the newest
+                    Location location = locationList.get(locationList.size() - 1);
+                    Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                    mLastLocation = location;
+
+                    if(isFirstTime) {
+                        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+                        isFirstTime = false;
+                    }
+                }
+            }
+        };
 
     }
 
@@ -184,17 +177,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        //stop location updates when Activity is no longer active
         if (mFusedLocationClient != null) {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         }
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+
     public void addAllMarkersFromDatabase() {
 
         List<Object> markers = db.returnMarkerList();
@@ -244,7 +244,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         updateLocationClient();
 
-        //For adding a new marker on the current position
         mAddMarkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -310,12 +309,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+
     public void updateLocationClient(){
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                //Location Permission already granted
+
 
                 mGoogleMap.setMyLocationEnabled(true);
             } else {

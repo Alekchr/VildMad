@@ -7,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
-
 import java.util.ArrayList;
-import java.util.List;
+
 
 import systems.mobile.vildmad.DatabaseHandler;
 import systems.mobile.vildmad.R;
@@ -27,7 +25,7 @@ public class FindFragment extends Fragment{
     private DatabaseHandler db;
 
     public FindFragment() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -47,7 +45,6 @@ public class FindFragment extends Fragment{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("New instance", "A new instance was created");
         plants = new ArrayList<>();
         db = DatabaseHandler.getInstance();
         String[] planttypes = getResources().getStringArray(R.array.planttypes);
@@ -105,16 +102,12 @@ public class FindFragment extends Fragment{
             public void onItemClick(AdapterView<?> AV, View v, int pos,
                                     long id) {
 
-                // Get user selected item.
                 Object itemObject = AV.getAdapter().getItem(pos);
 
-                // Translate the selected item to DTO object.
                 PlantItem item = (PlantItem) itemObject;
 
-                // Get the checkbox.
                 CheckBox itemCheckbox = (CheckBox) v.findViewById(R.id.itemCheckbox);
 
-                // Reverse the checkbox and clicked item check state.
                 if(item.isChecked())
                 {
                     itemCheckbox.setChecked(false);
