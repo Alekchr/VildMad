@@ -50,7 +50,8 @@ public class FindFragment extends Fragment {
                 case "Svampe":
                     for (String svamp : getResources().getStringArray(R.array.svampe)
                             ) {
-                        plants.add(new PlantItem(svamp, "x"));
+
+                        plants.add(new PlantItem(svamp, ""));
                     }
                     break;
 
@@ -64,7 +65,8 @@ public class FindFragment extends Fragment {
                 case "Krydderurter":
                     for (String krydderurter : getResources().getStringArray(R.array.krydderurter)
                             ) {
-                        plants.add(new PlantItem(krydderurter, ""));
+                            plants.add(new PlantItem(krydderurter, ""));
+
                     }
                     break;
 
