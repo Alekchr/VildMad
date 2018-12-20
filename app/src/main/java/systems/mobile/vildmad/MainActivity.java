@@ -1,6 +1,7 @@
 package systems.mobile.vildmad;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,7 +19,6 @@ import systems.mobile.vildmad.login.SignupActivity;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener{
 
-    private TextView mTextMessage;
     Fragment fragment = null;
 
 
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         setContentView(R.layout.activity_home);
         fragment = new HomeFragment();
         replaceFragment(fragment);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
