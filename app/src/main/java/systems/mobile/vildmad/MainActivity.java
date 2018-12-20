@@ -11,11 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import systems.mobile.vildmad.find_fragment.FindFragment;
-import systems.mobile.vildmad.login.LoginActivity;
-import systems.mobile.vildmad.login.SignupActivity;
+
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
 
@@ -73,10 +71,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         transaction.commit();
     }
 
-    public void returnToFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack();
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
