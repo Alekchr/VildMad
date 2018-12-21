@@ -45,18 +45,21 @@ public class DatabaseHandler {
     }
 
 
+
     public void processImageUrl(final CustomMarker cm) {
         Uri file = Uri.parse(cm.getPictureUrl());
         final StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
         uploadTask = locationPath.putFile(file);
         Task<Uri> downloadUri = locationPath.getDownloadUrl();
         cm.setPictureUrl(String.valueOf(downloadUri));
+
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
                     throw task.getException();
                 }
+
                 // Continue with the task to get the download URL
                 return locationPath.getDownloadUrl();
             }
@@ -68,6 +71,7 @@ public class DatabaseHandler {
                     System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     cm.setPictureUrl(String.valueOf(downloadUri));
                     myRef.push().setValue(cm);
+
                 } else {
                     // Handle failures
                     // ...
@@ -75,25 +79,20 @@ public class DatabaseHandler {
             }
         });
     }
-
     public void writeNewMarker(final CustomMarker cm) {
 
+        //UPLOAD THE IMAGE TO STORAGE
+        try {
+            processImageUrl(cm);
+        } catch (Exception e) {
+            System.out.println("Didnt work");
 
-        if (cm.getPictureUrl() != null) {
-            Uri file = Uri.parse(cm.getPictureUrl());
-            if (file != null) {
-                StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
-                uploadTask = locationPath.putFile(file);
-            }
-
-            System.out.println(cm.getPictureUrl());
         }
         myRef.push().setValue(cm);
     }
 
 
     public void readAllMarkers() {
-
         list.clear();
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
