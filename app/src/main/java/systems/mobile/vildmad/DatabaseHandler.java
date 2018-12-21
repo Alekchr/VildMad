@@ -68,7 +68,6 @@ public class DatabaseHandler {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    System.out.println("LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     cm.setPictureUrl(String.valueOf(downloadUri));
                     myRef.push().setValue(cm);
 
