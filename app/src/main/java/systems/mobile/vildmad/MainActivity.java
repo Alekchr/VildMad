@@ -1,5 +1,7 @@
 package systems.mobile.vildmad;
 
+
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,11 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import systems.mobile.vildmad.find_fragment.FindFragment;
-import systems.mobile.vildmad.login.LoginActivity;
-import systems.mobile.vildmad.login.SignupActivity;
+
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
 
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         setContentView(R.layout.activity_home);
         fragment = new HomeFragment();
         replaceFragment(fragment);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -70,10 +71,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         transaction.commit();
     }
 
-    public void returnToFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.popBackStack();
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
