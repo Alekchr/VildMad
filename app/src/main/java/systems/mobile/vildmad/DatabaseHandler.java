@@ -30,7 +30,6 @@ public class DatabaseHandler {
     CopyOnWriteArrayList<CustomMarker> list = new CopyOnWriteArrayList();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-    UploadTask uploadTask;
     FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private DatabaseHandler() {
@@ -47,36 +46,52 @@ public class DatabaseHandler {
 
 
     public void processImageUrl(final CustomMarker cm) {
-        Uri file = Uri.parse(cm.getPictureUrl());
-        final StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
-        uploadTask = locationPath.putFile(file);
-        Task<Uri> downloadUri = locationPath.getDownloadUrl();
-        cm.setPictureUrl(String.valueOf(downloadUri));
+        if(cm.getPictureUrl() != null) {
+            Uri file = Uri.parse(cm.getPictureUrl());
+            final StorageReference locationPath = storageRef.child("images/" + file.getLastPathSegment());
+            UploadTask uploadTask = locationPath.putFile(file);
+            Task<Uri> downloadUri = locationPath.getDownloadUrl();
+            cm.setPictureUrl(String.valueOf(downloadUri));
 
-        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return locationPath.getDownloadUrl();
                 }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        cm.setPictureUrl(String.valueOf(downloadUri));
+                        myRef.push().setValue(cm);
 
-                // Continue with the task to get the download URL
-                return locationPath.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-                    cm.setPictureUrl(String.valueOf(downloadUri));
-                    myRef.push().setValue(cm);
-
-                } else {
-                    // Handle failures
-                    // ...
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
                 }
-            }
-        });
+            });
+        }
+        else{
+            myRef.push().setValue(cm);
+        }
+    }
+    public void writeNewMarker(final CustomMarker cm) {
+
+        //UPLOAD THE IMAGE TO STORAGE
+        try {
+            processImageUrl(cm);
+        } catch (Exception e) {
+            System.out.println("Didnt work");
+
+        }
+        //myRef.push().setValue(cm);
     }
 
 
