@@ -78,17 +78,6 @@ public class DatabaseHandler {
             }
         });
     }
-    public void writeNewMarker(final CustomMarker cm) {
-
-        //UPLOAD THE IMAGE TO STORAGE
-        try {
-            processImageUrl(cm);
-        } catch (Exception e) {
-            System.out.println("Didnt work");
-
-        }
-        myRef.push().setValue(cm);
-    }
 
 
     public void readAllMarkers() {

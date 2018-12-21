@@ -344,7 +344,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Marker m = mGoogleMap.addMarker(markerOptions);
             m.setTag(cm);
 
-            db.writeNewMarker(cm);
+            db.processImageUrl(cm);
 
         }
     }
@@ -446,6 +446,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         View settingsLayout = inflater.inflate(R.layout.marker_settings_layout, null);
         Button saveSettings = settingsLayout.findViewById(R.id.saveSettingsBtn);
         Button closeSettings = settingsLayout.findViewById(R.id.closeSettingsBtn);
+        final CheckBox showPublic = settingsLayout.findViewById(R.id.show_public_settings);
         final AlertDialog settingsDialog = new AlertDialog.Builder(getContext()).setTitle("Indstillinger")
                 .setCancelable(false)
                 .setView(settingsLayout)
@@ -454,7 +455,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         saveSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                settingsDialog.dismiss(); //TO BE FIXED
+                settingsDialog.dismiss();
+
             }
         });
         closeSettings.setOnClickListener(new View.OnClickListener() {
@@ -463,6 +465,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 settingsDialog.dismiss();
             }
         });
+
+
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
